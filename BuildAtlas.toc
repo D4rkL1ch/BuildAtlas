@@ -23,8 +23,10 @@ Model\Talents.lua
 Model\Codecs\Loadout.lua
 Model\Codecs\Share.lua
 Model\Compare.lua
+Model\Attribution.lua
 
 Core\Probe.lua
+Core\Measure.lua
 
 UI\Theme.lua
 UI\Toasts.lua
@@ -35,5 +37,7 @@ UI\Share.lua
 UI\ApplyDialog.lua
 UI\Compare.lua
 UI\SynergyMap.lua
+UI\FightReport.lua
+UI\Benchmark.lua
 UI\Launcher.lua
 UI\Settings.lua

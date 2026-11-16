@@ -24,30 +24,7 @@ local function addPair(tt, left, right, lc, rc)
 	tt:AddDoubleLine(left, right, lc[1], lc[2], lc[3], rc[1], rc[2], rc[3])
 end
 
--- The numbers that change between rank texts, e.g. { "20%", "40%", "60%" }.
--- Nil when the texts differ in more than one place or not at all.
-function TalentTooltip.RankValues(rankTexts)
-	if not rankTexts or #rankTexts < 2 then return nil end
-	local pattern = "[%d%.]+%%?"
-	local tokens = {}
-	for i, text in ipairs(rankTexts) do
-		tokens[i] = {}
-		for n in text:gmatch(pattern) do table.insert(tokens[i], n) end
-	end
-	local col
-	for j = 1, #tokens[1] do
-		for i = 2, #tokens do
-			if tokens[i][j] ~= tokens[1][j] then
-				if col and col ~= j then return nil end
-				col = j
-			end
-		end
-	end
-	if not col then return nil end
-	local out = {}
-	for i = 1, #tokens do out[i] = tokens[i][col] or "?" end
-	return out
-end
+TalentTooltip.RankValues = ns.Attribution.RankValues
 
 -- Fills GameTooltip (already owned/anchored) for a talent of `tree` under
 -- the plan `ranks`, with the synergy graph `graph`.

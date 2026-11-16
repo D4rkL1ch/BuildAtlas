@@ -24,8 +24,8 @@ local NAV = {
 		{ key = "leveling", label = "Leveling path", milestone = "M6" },
 	} },
 	{ label = "Measure", items = {
-		{ key = "report", label = "Fight report", milestone = "M5" },
-		{ key = "bench", label = "Benchmark", milestone = "M5" },
+		{ key = "report", label = "Fight report" },
+		{ key = "bench", label = "Benchmark" },
 	} },
 	{ label = "Gear & share", items = {
 		{ key = "gear", label = "Stats & gear", milestone = "M6" },

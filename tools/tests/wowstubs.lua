@@ -262,6 +262,7 @@ function M.reset()
 	M.staged, M.refusePurchase, M.refuseCommit, M.committed, M.rolledBack = false, false, false, nil, nil
 	M.purchased = {}
 	M.unspent = 20
+	M.gear = { [16] = 19019 }
 	M.sentAddon = {}
 	M.instance, M.raid = false, false
 	C_ChatInfo = {
@@ -364,6 +365,7 @@ function IsInInstance() return M.instance, M.instance and "party" or "none" end
 function IsInRaid() return M.raid end
 function UnitRace() return "Human", "Human" end
 function UnitName() return "Tester" end
+function GetInventoryItemID(_, slot) return M.gear[slot] end
 function GetTime() return M.now or 0 end
 function IsShiftKeyDown() return M.shift end
 function UnitClass() return "Warrior", "WARRIOR", M.classID end
