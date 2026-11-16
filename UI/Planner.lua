@@ -18,7 +18,8 @@ local INSPECT_W, FOOTER_H, STRIP_H = 320, 60, 30
 local PAD_X, PAD_TOP, TREE_GAP = 18, 16, 14
 local TREES_W = CONTENT_W - INSPECT_W - PAD_X * 2
 local TREES_H = CONTENT_H - FOOTER_H - PAD_TOP - 12 - STRIP_H - 12
-local INNER_W = INSPECT_W - 32
+-- Inspector content width: panel minus padding and the scroll bar.
+local INNER_W = INSPECT_W - 46
 
 local SLOT_KEYS = { "scratch", "spec1", "spec2" }
 
@@ -410,11 +411,12 @@ local function addBox(lines, bg, border)
 	return box
 end
 
-local function addRow(left, right, rightColor, onClick)
+local function addRow(left, right, rightColor, onClick, sub)
 	local row = pane.rows:Acquire()
 	row:SetWidth(INNER_W)
-	row:SetHeight(right and right ~= "" and 34 or 30)
+	row:SetHeight(sub and 44 or (right and right ~= "" and 34 or 30))
 	row:SetLabel(left)
+	row:SetSub(sub)
 	row.Right:SetText(right or "")
 	UI.SetTextColor(row.Right, rightColor or "muted")
 	row:SetScript("OnClick", onClick)
@@ -430,14 +432,15 @@ local function renderSpellView()
 	addText((L["%d talents across all trees change this spell. Teal rings mark them."]):format(#list), 13, "muted")
 	for _, id in ipairs(list) do
 		local t = tree.talents[id]
-		addRow(t.name .. "  " .. UI.Colorize(graph:EffectOn(id, state.spell) or "", "muted"),
-			rankOf(id) .. "/" .. t.maxRanks, "gold", function() Planner.Select(id) end)
+		addRow(t.name, rankOf(id) .. "/" .. t.maxRanks, "gold", function() Planner.Select(id) end,
+			graph:EffectOn(id, state.spell))
 	end
 	layoutY = layoutY + 6
 	local back = pane.rows:Acquire()
 	back:SetWidth(INNER_W)
 	back:SetHeight(32)
 	back:SetLabel(L["Back to talent"])
+	back:SetSub(nil)
 	back.Right:SetText("")
 	back:SetScript("OnClick", function() Planner.FocusSpell(nil) end)
 	place(back, 32)
@@ -508,7 +511,7 @@ local function renderTalentView()
 		addText(L["Passive stat talent — no spell is changed."], 12, "faint")
 	end
 	for _, m in ipairs(mods) do
-		addRow(spellName(m.spell), m.fx, "muted", function() Planner.FocusSpell(m.spell) end)
+		addRow(spellName(m.spell), "›", "faint", function() Planner.FocusSpell(m.spell) end, m.fx)
 	end
 
 	local stats = graph:Stats(t.id)
@@ -541,9 +544,8 @@ local function renderTalentView()
 			local via = {}
 			for i, s in ipairs(rel.via) do via[i] = spellName(s) end
 			local owned = rankOf(rel.id) > 0
-			addRow(o.name .. "\n" .. UI.Colorize(L["via "] .. table.concat(via, ", "), "muted"),
-				owned and L["In build"] or L["Not taken"], owned and "green" or "orange",
-				function() Planner.Select(rel.id) end)
+			addRow(o.name, owned and L["In build"] or L["Not taken"], owned and "green" or "orange",
+				function() Planner.Select(rel.id) end, L["via "] .. table.concat(via, ", "))
 		end
 	end
 end
@@ -557,6 +559,13 @@ local function renderInspector()
 	pane.rankRow:ClearAllPoints()
 	layoutY = 0
 	if state.spell then renderSpellView() else renderTalentView() end
+	pane.inspect:SetHeight(math.max(layoutY, 1))
+	-- Back to the top when the inspected talent or spell changes.
+	local shown = state.spell and ("spell" .. tostring(state.spell)) or ("talent" .. tostring(state.selected))
+	if shown ~= pane.inspectShown then
+		pane.inspectShown = shown
+		if pane.inspectScroll.SetVerticalScroll then pane.inspectScroll:SetVerticalScroll(0) end
+	end
 end
 
 -- Footer and title tools --------------------------------------------------------
@@ -796,10 +805,15 @@ local function buildInspector(body)
 	edge:SetPoint("BOTTOMLEFT")
 	edge:SetWidth(1)
 
-	local inspect = CreateFrame("Frame", nil, panel)
-	inspect:SetPoint("TOPLEFT", 16, -16)
-	inspect:SetPoint("BOTTOMRIGHT", -16, 16)
+	-- Scrolls when a talent has more synergies than fit.
+	local scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	scroll:SetPoint("TOPLEFT", 16, -16)
+	scroll:SetPoint("BOTTOMRIGHT", -28, 12)
+	local inspect = CreateFrame("Frame", nil, scroll)
+	inspect:SetSize(INNER_W, 10)
+	scroll:SetScrollChild(inspect)
 	pane.inspect = inspect
+	pane.inspectScroll = scroll
 	pane.texts = UI.Pool(inspect, function(p) return p:CreateFontString(nil, "OVERLAY") end)
 	pane.boxes = UI.Pool(inspect, function(p) return UI.Panel(p, "panel", "border") end)
 	pane.rows = UI.Pool(inspect, function(p) return UI.Button(p, "", "row", INNER_W, 32) end)

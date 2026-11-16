@@ -183,10 +183,27 @@ function UI.Button(parent, text, kind, width, height)
 	for k, fn in pairs(ButtonMixin) do b[k] = fn end
 	b.Label = UI.Text(b, b.style.size, b.style.text, "body", kind == "row" and "LEFT" or "CENTER")
 	if kind == "row" then
-		b.Label:SetPoint("LEFT", 10, 0)
 		b.Right = UI.Text(b, 12, "muted", "body", "RIGHT")
 		b.Right:SetPoint("RIGHT", -10, 0)
-		b.Label:SetPoint("RIGHT", b.Right, "LEFT", -8, 0)
+		b.Sub = UI.Text(b, 11, "muted")
+		-- One line (label centred) or two (label + sub line); see SetSub.
+		function b:SetSub(text)
+			self.Label:ClearAllPoints()
+			self.Sub:ClearAllPoints()
+			if text and text ~= "" then
+				self.Label:SetPoint("TOPLEFT", 10, -6)
+				self.Label:SetPoint("RIGHT", self.Right, "LEFT", -8, 0)
+				self.Sub:SetPoint("TOPLEFT", self.Label, "BOTTOMLEFT", 0, -3)
+				self.Sub:SetPoint("RIGHT", self.Right, "LEFT", -8, 0)
+				self.Sub:SetText(text)
+				self.Sub:Show()
+			else
+				self.Label:SetPoint("LEFT", 10, 0)
+				self.Label:SetPoint("RIGHT", self.Right, "LEFT", -8, 0)
+				self.Sub:Hide()
+			end
+		end
+		b:SetSub(nil)
 	else
 		b.Label:SetPoint("CENTER")
 	end
