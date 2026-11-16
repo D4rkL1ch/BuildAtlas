@@ -160,19 +160,16 @@ local function readDefinition(configID, entryID)
 	return spellID, name, icon, entry and entry.maxRanks
 end
 
--- Gate (points needed in the group) and whether the node is granted for free.
-local function readConditions(configID, conditionIDs)
-	local tierPoints, granted
+-- Whether the node is granted for free. Tier gates are not read here: the
+-- probe showed spentAmountRequired is what is still missing in this config
+-- (0 in a tab that already has the points), not the gate itself. Gates come
+-- from the layout (row x 5, which is what the DB2 TraitCond rows say).
+local function readGranted(configID, conditionIDs)
 	for _, condID in ipairs(conditionIDs or {}) do
 		local cond = Read(nil, C_Traits.GetConditionInfo, configID, condID)
-		if cond then
-			if cond.spentAmountRequired and cond.spentAmountRequired > 0 then
-				tierPoints = math.max(tierPoints or 0, cond.spentAmountRequired)
-			end
-			if cond.ranksGranted and cond.ranksGranted > 0 then granted = true end
-		end
+		if cond and cond.ranksGranted and cond.ranksGranted > 0 then return true end
 	end
-	return tierPoints, granted
+	return false
 end
 
 -- Builds the tree for a class (see Model/Plan.lua for its shape). Returns
@@ -191,7 +188,6 @@ function Talents.ReadTree(classID)
 	for i, g in ipairs(groups) do groupIndex[g.groupID] = i end
 
 	local talents, nodes, liveRanks = {}, {}, {}
-	local gatesFound = false
 	for _, nodeID in ipairs(Read(nil, C_Traits.GetTreeNodes, treeID) or {}) do
 		local info = Read(nil, C_Traits.GetNodeInfo, configID, nodeID)
 		if info and info.ID and info.ID ~= 0 and not info.subTreeID then
@@ -202,13 +198,12 @@ function Talents.ReadTree(classID)
 			if group then
 				local entryID = info.entryIDs and info.entryIDs[1]
 				local spellID, name, icon, entryMax = readDefinition(configID, entryID)
-				local tierPoints, granted = readConditions(configID, info.conditionIDs)
-				if tierPoints then gatesFound = true end
+				local granted = readGranted(configID, info.conditionIDs)
 				local t = {
 					id = nodeID, group = group, posX = info.posX or 0, posY = info.posY or 0,
 					maxRanks = (info.maxRanks and info.maxRanks > 0) and info.maxRanks or entryMax or 1,
-					entryID = entryID, spellID = spellID, name = name or ("Node " .. nodeID), icon = icon,
-					tierPoints = tierPoints, free = granted or nil, prereqs = {},
+					entryID = entryID, spellID = spellID, name = name or ("Node " .. nodeID), icon = icon, classID = classID,
+					free = granted or nil, prereqs = {},
 				}
 				talents[nodeID] = t
 				nodes[#nodes + 1] = t
@@ -233,13 +228,12 @@ function Talents.ReadTree(classID)
 
 	local rows, cols = Talents.DeriveLayout(nodes)
 	for _, t in pairs(talents) do
-		if not t.tierPoints then t.tierPoints = t.row * ns.POINTS_PER_TIER end
+		t.tierPoints = t.row * ns.POINTS_PER_TIER
 	end
 
 	local tree = {
 		classID = classID, treeID = treeID, groups = groups, talents = talents,
 		rows = rows, cols = math.max(cols, 4), maxPoints = ns.MAX_TALENT_POINTS,
-		gatesFromData = gatesFound,
 		-- Ranks of the config used to read: the active spec for the player's class.
 		readRanks = liveRanks,
 		isPlayerClass = classID == Talents.PlayerClassID(),
@@ -263,11 +257,38 @@ function Talents.ReadRanks(tree, configID)
 end
 
 -- Rank description from the client (rank 1 when unlearned).
+-- Bundled data for a talent (Data/TalentData.lua), or nil.
+function Talents.Data(t)
+	local classData = ns.ClassData and ns.ClassData[t.classID]
+	return classData and t.spellID and classData.talents[t.spellID]
+end
+
+-- Spell data loads lazily: the first description request for a talent can
+-- come back empty (probe Q7). Ask the client to load it; SPELL_DATA_LOAD_RESULT
+-- then refreshes the planner.
+local requested = {}
+local function requestLoad(spellID)
+	if spellID and not requested[spellID] and C_Spell and C_Spell.RequestLoadSpellData then
+		requested[spellID] = true
+		pcall(C_Spell.RequestLoadSpellData, spellID)
+	end
+end
+
 function Talents.Describe(t, rank)
-	if not t.entryID then return nil end
-	local text = Read(nil, C_Traits.GetTraitDescription, t.entryID, math.max(1, rank))
+	rank = math.max(1, rank)
+	local text = t.entryID and Read(nil, C_Traits.GetTraitDescription, t.entryID, rank)
+	if (not text or text == "") and t.spellID then
+		requestLoad(t.spellID)
+		local data = Talents.Data(t)
+		text = data and data.ranks and data.ranks[math.min(rank, #data.ranks)]
+	end
 	if (not text or text == "") and t.spellID then
 		text = Read(nil, C_Spell.GetSpellDescription, t.spellID)
 	end
+	if text == "" then return nil end
 	return text
 end
+
+ns:RegisterEvent("SPELL_DATA_LOAD_RESULT", function(_, spellID, success)
+	if success and requested[spellID] then ns:SendMessage("BA_SPELL_DATA", spellID) end
+end)

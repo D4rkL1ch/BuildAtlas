@@ -1,0 +1,118 @@
+{
+  "_comment": "Hand-written semantics for talents the DB2 data can't express (server-scripted dummy auras, conditional effects). Keys: talent name or spell ID. mods replace the generated entry for the same spell; dropMods removes generated links by spell name.",
+  "talents": {
+    "Deep Wounds": {
+      "mods": [
+        {"spell": 6603, "fx": "melee crits apply the bleed"},
+        {"spell": "Mortal Strike", "fx": "crits apply the bleed"},
+        {"spell": "Overpower", "fx": "crits apply the bleed"},
+        {"spell": "Heroic Strike", "fx": "crits apply the bleed"}
+      ],
+      "stats": ["Crit", "Weapon damage"],
+      "note": "Proc chain: any melee crit → Deep Wound bleed. Stronger with Cruelty, Impale and Improved Overpower, which add crits or crit damage."
+    },
+    "Flurry": {
+      "mods": [{"spell": 6603, "fx": "faster swings after a crit"}],
+      "stats": ["Crit", "Attack speed"],
+      "note": "Proc chain: crit → Flurry → more swings → more Unbridled Wrath Rage and more chances to crit again."
+    },
+    "Unbridled Wrath": {
+      "mods": [
+        {"spell": 6603, "fx": "melee hits can generate Rage"},
+        {"spell": "Heroic Strike", "fx": "more Rage to spend"}
+      ],
+      "stats": ["Hit", "Attack speed"],
+      "note": "Resource loop: every weapon hit can add Rage, so fast or dual-wield weapons get more out of it than a slow two-hander."
+    },
+    "Enrage": {
+      "mods": [
+        {"spell": 6603, "fx": "more damage while enraged"},
+        {"spell": "Bloodthirst", "fx": "more damage while enraged"},
+        {"spell": "Mortal Strike", "fx": "more damage while enraged"}
+      ],
+      "stats": ["Damage"],
+      "note": "Proc chain: getting hit → Enrage → more Physical damage for 12 sec. Best when tanking or soloing, rare in a raid."
+    },
+    "Sweeping Strikes": {
+      "mods": [
+        {"spell": "Whirlwind", "fx": "hits cleave to a second target"},
+        {"spell": "Mortal Strike", "fx": "hits cleave to a second target"},
+        {"spell": "Cleave", "fx": "hits cleave to a second target"},
+        {"spell": 6603, "fx": "swings cleave to a second target"}
+      ],
+      "note": "Doubles single-target hits for the next 5 attacks when two enemies are close."
+    },
+    "Weaponmaster": {
+      "mods": [{"spell": 6603, "fx": "bonus by weapon type"}],
+      "stats": ["Crit", "Armor penetration"],
+      "note": "Axe/Polearm: more crit (feeds Deep Wounds and Flurry). Mace/Staff: ignores armor. Sword: extra attacks."
+    },
+    "Dual Wield Specialization": {
+      "mods": [{"spell": 6603, "fx": "more off-hand damage and Rage"}],
+      "stats": ["Weapon damage"],
+      "note": "Resource loop: off-hand swings hit harder and give more Rage."
+    },
+    "Anger Management": {
+      "mods": [
+        {"spell": "Heroic Strike", "fx": "steady Rage to spend"},
+        {"spell": "Mortal Strike", "fx": "steady Rage to spend"},
+        {"spell": "Bloodthirst", "fx": "steady Rage to spend"}
+      ],
+      "note": "Resource loop: a steady Rage trickle feeds every spender, most noticeable when Rage is short (low gear, missing hits)."
+    },
+    "Improved Tactical Mastery": {
+      "mods": [
+        {"spell": "Overpower", "fx": "keep Rage when stance dancing"},
+        {"spell": "Mortal Strike", "fx": "keep Rage when stance dancing"},
+        {"spell": "Whirlwind", "fx": "keep Rage when stance dancing"}
+      ],
+      "note": "Resource loop: stance-dance into Overpower (Battle) or Whirlwind (Berserker) without throwing away the Rage you need for your main attack."
+    },
+    "Two-Handed Weapon Specialization": {
+      "mods": [
+        {"spell": 6603, "fx": "more damage with two-handers"},
+        {"spell": "Mortal Strike", "fx": "more damage with two-handers"},
+        {"spell": "Overpower", "fx": "more damage with two-handers"},
+        {"spell": "Slam", "fx": "more damage with two-handers"}
+      ],
+      "stats": ["Weapon damage"]
+    },
+    "Cruelty": {
+      "mods": [
+        {"spell": 6603, "fx": "more melee crits"},
+        {"spell": "Mortal Strike", "fx": "more crits"},
+        {"spell": "Bloodthirst", "fx": "more crits"},
+        {"spell": "Overpower", "fx": "more crits"}
+      ],
+      "stats": ["Crit"],
+      "note": "More crits feed Deep Wounds, Flurry and Impale."
+    },
+    "Improved Whirlwind": {
+      "mods": [{"spell": "Whirlwind", "fx": "shorter cooldown, more damage to the closest enemy"}]
+    },
+    "Shield Specialization": {
+      "mods": [
+        {"spell": "Shield Block", "fx": "more blocks"},
+        {"spell": "Revenge", "fx": "blocks enable Revenge"}
+      ],
+      "stats": ["Block"],
+      "note": "Resource loop: blocks generate Rage and enable Revenge."
+    },
+    "Master of Defense": {
+      "mods": [{"spell": "Revenge", "fx": "dodges and parries enable Revenge"}],
+      "stats": ["Dodge", "Parry"],
+      "note": "Resource loop: dodges and parries generate Rage while a shield is equipped."
+    },
+    "Blood Craze": {
+      "stats": ["Health"],
+      "note": "Proc: being crit or hit hard → regenerate health. Defensive, mostly for soloing."
+    },
+    "Bloodthrill": {
+      "mods": [
+        {"spell": "Rend", "fx": "must be on the target"},
+        {"spell": "Overpower", "fx": "extra Overpower procs"}
+      ],
+      "note": "Proc chain: keep Rend up → main-hand hits can enable Overpower → more Overpower crits (Improved Overpower, Deep Wounds)."
+    }
+  }
+}

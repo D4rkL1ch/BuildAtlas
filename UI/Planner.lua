@@ -43,11 +43,15 @@ local function className(classID)
 end
 
 local function spellName(spell)
+	local classData = ns.ClassData and ns.ClassData[state.classID]
+	local info = classData and classData.spells and classData.spells[spell]
+	if info and info.name then return info.name end
 	if type(spell) == "number" then
 		return Read(nil, C_Spell.GetSpellName, spell) or ("Spell " .. spell)
 	end
 	return tostring(spell)
 end
+Planner.SpellName = spellName
 
 local function rankOf(id)
 	return ranks and ranks[id] or 0
@@ -501,6 +505,11 @@ local function renderTalentView()
 		addText(L["Requires: "] .. table.concat(names, ", "), 12, "muted")
 	end
 
+	local data = Talents.Data(t)
+	if data and data.classic then
+		addText(UI.Colorize(L["Vs Classic: "], "faint") .. data.classic, 12, "muted")
+	end
+
 	if not graph.hasData then
 		addLabel(L["Modifies"])
 		addText(L["Which spells this talent changes, what it scales with and its synergies come from bundled game data, which isn't in this build yet. Layout, ranks and descriptions above are read live from the game."], 12, "faint")
@@ -889,6 +898,17 @@ ns:RegisterEvent("PLAYER_TALENT_UPDATE", onTalentsChanged)
 ns:RegisterEvent("TRAIT_TREE_CHANGED", function()
 	Talents.Invalidate()
 	if ns.Window.IsShown() and ns.Window.current == "planner" then Planner.Refresh() end
+end)
+
+-- A description that was still loading arrived: redraw (cheap, no re-read).
+local renderQueued = false
+ns:RegisterMessage("BA_SPELL_DATA", function()
+	if renderQueued or not (ns.Window.IsShown() and ns.Window.current == "planner") then return end
+	renderQueued = true
+	ns.Util.After(0.1, function()
+		renderQueued = false
+		Planner.Render()
+	end)
 end)
 
 -- For tests and debugging.

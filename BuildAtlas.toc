@@ -15,6 +15,7 @@ Core\Secrets.lua
 Core\Util.lua
 
 Data\Classes.lua
+Data\TalentData.lua
 
 Model\Plan.lua
 Model\SynergyGraph.lua
