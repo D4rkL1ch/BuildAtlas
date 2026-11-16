@@ -17,7 +17,7 @@ for _, name in ipairs({
 	"StopMovingOrSizing", "SetJustifyH", "SetWordWrap", "RegisterForClicks", "SetTexCoord",
 	"SetFont", "SetTextColor", "SetBackdrop", "SetBackdropColor", "SetBackdropBorderColor",
 	"SetDesaturated", "SetThickness", "SetStartPoint", "SetEndPoint", "SetFrameLevel",
-	"AddLine", "AddDoubleLine", "SetOwner", "GenerateMenu",
+	"AddLine", "AddDoubleLine", "SetOwner", "GenerateMenu", "SetShadowColor", "SetShadowOffset",
 }) do W[name] = noop end
 
 local function newWidget(kind, parent)

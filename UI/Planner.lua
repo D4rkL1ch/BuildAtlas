@@ -227,8 +227,8 @@ local function createNode(parent)
 	b.Ring:SetPoint("TOPLEFT", -4, 4)
 	b.Ring:SetPoint("BOTTOMRIGHT", 4, -4)
 	b.Badge = UI.Panel(b, "0E1014", "borderHi")
-	b.Badge:SetSize(28, 14)
-	b.Badge:SetPoint("BOTTOMRIGHT", 10, -8)
+	b.Badge:SetSize(34, 17)
+	b.Badge:SetPoint("BOTTOMRIGHT", 12, -9)
 	b.Badge:SetFrameLevel(b:GetFrameLevel() + 3)
 	b.Badge.Text = UI.Text(b.Badge, 10, "text", "body", "CENTER")
 	b.Badge.Text:SetPoint("CENTER", 0, 0)
@@ -376,7 +376,7 @@ end
 
 local function addText(text, size, color, font, gap)
 	local fs = pane.texts:Acquire()
-	fs:SetFont(UI.fonts[font or "body"], size or 13, "")
+	UI.SetFont(fs, font, size)
 	UI.SetTextColor(fs, color or "text")
 	fs:SetJustifyH("LEFT")
 	fs:SetWordWrap(true)
@@ -404,7 +404,7 @@ local function addBox(lines, bg, border)
 			fs = box:CreateFontString(nil, "OVERLAY")
 			box.used[i] = fs
 		end
-		fs:SetFont(UI.fonts.body, 13, "")
+		UI.SetFont(fs, "body", 13)
 		UI.SetTextColor(fs, line.color or "text")
 		fs:SetJustifyH("LEFT")
 		fs:SetWordWrap(true)
@@ -461,10 +461,10 @@ local function renderTalentView()
 	addLabel(groupName(t.group) .. " · " .. L["tier"] .. " " .. tier, "muted")
 	addText(t.name, 20, "white", "title", 14)
 
-	-- − rank + hint
+	-- − rank +, then the hint on its own wrapped line
 	local rankRow = pane.rankRow
 	rankRow:Show()
-	place(rankRow, 30, 14)
+	place(rankRow, 30, 8)
 	rankRow.Rank:SetText(t.free and L["auto"] or (r .. "/" .. t.maxRanks))
 	local canAdd = Plan.CanIncrease(tree, ranks, t.id)
 	local canRemove = Plan.CanDecrease(tree, ranks, t.id)
@@ -473,7 +473,11 @@ local function renderTalentView()
 	rankRow.Minus:SetEnabledState(canRemove and not inCombat)
 	local hint = (r >= t.maxRanks and not t.free) and L["Maxed"] or requirementText(t.id) or ""
 	if r > 0 and not canRemove then hint = removalBlockText(t.id) or hint end
-	rankRow.Hint:SetText(hint)
+	if hint ~= "" then
+		addText(hint, 12, (r > 0 and not canRemove) and "orange" or "muted", "body", 12)
+	else
+		layoutY = layoutY + 6
+	end
 
 	local lines = {}
 	local desc = Talents.Describe(t, r)
@@ -812,14 +816,11 @@ local function buildInspector(body)
 	rankRow.Minus:SetPoint("LEFT")
 	rankRow.Minus:SetScript("OnClick", function() Planner.Change(state.selected, -1) end)
 	rankRow.Rank = UI.Text(rankRow, 16, "gold", "body", "CENTER")
-	rankRow.Rank:SetWidth(48)
+	rankRow.Rank:SetWidth(60)
 	rankRow.Rank:SetPoint("LEFT", rankRow.Minus, "RIGHT", 6, 0)
 	rankRow.Plus = UI.Button(rankRow, "+", "mini", 30, 30)
 	rankRow.Plus:SetPoint("LEFT", rankRow.Rank, "RIGHT", 6, 0)
 	rankRow.Plus:SetScript("OnClick", function() Planner.Change(state.selected, 1) end)
-	rankRow.Hint = UI.Text(rankRow, 12, "muted")
-	rankRow.Hint:SetPoint("LEFT", rankRow.Plus, "RIGHT", 10, 0)
-	rankRow.Hint:SetPoint("RIGHT", rankRow, "RIGHT", 0, 0)
 	pane.rankRow = rankRow
 end
 

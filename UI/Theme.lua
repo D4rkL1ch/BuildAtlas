@@ -18,8 +18,8 @@ UI.colors = {
 	control    = "232733",
 	controlHi  = "2C3140",
 	text       = "E7E4DA",
-	muted      = "A3A7B3",
-	faint      = "8C92A0",
+	muted      = "B6BAC4",
+	faint      = "9DA3B0",
 	gold       = "E0B54A",
 	goldLight  = "F3E3B5",
 	goldBg     = "2A2416",
@@ -40,13 +40,24 @@ UI.colors = {
 	white      = "FFFFFF",
 }
 
--- Game fonts closest to the design: Morpheus for the Cinzel titles, Friz
--- Quadrata for headings, Arial Narrow for body and numbers.
+-- Game fonts: Morpheus for the Cinzel-like titles, Friz Quadrata (the
+-- standard UI font, crisp at small sizes) for everything else.
 UI.fonts = {
 	title = "Fonts\\MORPHEUS.TTF",
 	heading = "Fonts\\FRIZQT__.TTF",
-	body = "Fonts\\ARIALN.TTF",
+	body = "Fonts\\FRIZQT__.TTF",
 }
+
+-- Sizes in the code are the design's CSS pixels; the game renders them much
+-- smaller inside a scaled window, so every size goes through this factor.
+UI.FONT_SCALE = 1.25
+
+-- Sets font, scaled size and a drop shadow like Blizzard's UI text.
+function UI.SetFont(fs, font, size)
+	fs:SetFont(UI.fonts[font or "body"], math.floor((size or 13) * UI.FONT_SCALE + 0.5), "")
+	fs:SetShadowColor(0, 0, 0, 0.9)
+	fs:SetShadowOffset(1, -1)
+end
 
 local WHITE = "Interface\\Buttons\\WHITE8X8"
 
@@ -87,7 +98,7 @@ end
 
 function UI.Text(parent, size, color, font, justify)
 	local fs = parent:CreateFontString(nil, "OVERLAY")
-	fs:SetFont(UI.fonts[font or "body"], size or 13, "")
+	UI.SetFont(fs, font, size)
 	fs:SetTextColor(UI.RGB(UI.Hex(color or "text")))
 	fs:SetJustifyH(justify or "LEFT")
 	fs:SetWordWrap(false)
@@ -180,7 +191,7 @@ function UI.Button(parent, text, kind, width, height)
 		b.Label:SetPoint("CENTER")
 	end
 	b:SetLabel(text or "")
-	b:SetSize(width or 100, height or (kind == "seg" and 28 or kind == "mini" and 28 or kind == "chip" and 24 or 32))
+	b:SetSize(width or (kind == "mini" and 28 or 100), height or (kind == "seg" and 28 or kind == "mini" and 28 or kind == "chip" and 24 or 32))
 	if not width and kind ~= "mini" then b:FitWidth() end
 	b:SetScript("OnEnter", function(self) self.hovered = true self:ApplyLook() end)
 	b:SetScript("OnLeave", function(self) self.hovered = false self:ApplyLook() end)
