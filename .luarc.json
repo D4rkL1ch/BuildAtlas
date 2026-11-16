@@ -2,5 +2,5 @@
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": ["tools", "docs", "design"],
-  "diagnostics.globals": ["BuildAtlasDB", "BuildAtlasCharDB", "SlashCmdList", "UISpecialFrames", "UIErrorsFrame", "AddonCompartmentFrame", "LibStub", "issecretvalue", "C_Secrets", "C_DamageMeter", "C_AssistedCombat"]
+  "diagnostics.globals": ["BuildAtlasDB", "BuildAtlasCharDB", "SlashCmdList", "UISpecialFrames", "UIErrorsFrame", "AddonCompartmentFrame", "LibStub", "issecretvalue", "C_Secrets", "C_DamageMeter", "C_AssistedCombat", "Settings", "TooltipDataProcessor", "ItemRefTooltip", "MinimalSliderWithSteppersMixin", "MenuUtil", "Minimap", "GetMinimapShape"]
 }

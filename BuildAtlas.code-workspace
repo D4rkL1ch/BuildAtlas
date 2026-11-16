@@ -32,7 +32,14 @@
 			"issecretvalue",
 			"C_Secrets",
 			"C_DamageMeter",
-			"C_AssistedCombat"
+			"C_AssistedCombat",
+			"Settings",
+			"TooltipDataProcessor",
+			"ItemRefTooltip",
+			"MinimalSliderWithSteppersMixin",
+			"MenuUtil",
+			"Minimap",
+			"GetMinimapShape"
 		]
 	}
 }

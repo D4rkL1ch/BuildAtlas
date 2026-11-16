@@ -24,6 +24,9 @@ Model\Talents.lua
 Core\Probe.lua
 
 UI\Theme.lua
+UI\Toasts.lua
 UI\Window.lua
+UI\TooltipHooks.lua
 UI\Planner.lua
 UI\Launcher.lua
+UI\Settings.lua

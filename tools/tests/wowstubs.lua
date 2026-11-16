@@ -18,6 +18,7 @@ for _, name in ipairs({
 	"SetFont", "SetTextColor", "SetBackdrop", "SetBackdropColor", "SetBackdropBorderColor",
 	"SetDesaturated", "SetThickness", "SetStartPoint", "SetEndPoint", "SetFrameLevel",
 	"AddLine", "AddDoubleLine", "SetOwner", "GenerateMenu", "SetShadowColor", "SetShadowOffset",
+	"ClearLines", "SetHighlightTexture", "SetFrameStrata",
 }) do W[name] = noop end
 
 local function newWidget(kind, parent)
@@ -248,6 +249,9 @@ function M.reset()
 	M.otherTrees, M.otherTreeBySpec = {}, {}
 	M.viewLoadout = nil
 	M.timers = {}
+	M.ctrl = false
+	M.tooltipPostCalls = {}
+	GameTooltip.lines = {}
 	SlashCmdList = {}
 	UISpecialFrames = {}
 	installTraits()
@@ -308,7 +312,28 @@ function CreateFrame(kind, name, parent, template)
 	return w
 end
 UIParent = newWidget("Frame")
+Minimap = newWidget("Frame")
+function Minimap:GetCenter() return 500, 400 end
+function Minimap:GetEffectiveScale() return 1 end
+function GetCursorPosition() return 0, 0 end
+math.atan2 = math.atan2 or function(y, x) return math.atan(y, x) end
+
+-- GameTooltip records its lines (AddLine / AddDoubleLine) for tests.
 GameTooltip = newWidget("GameTooltip")
+function GameTooltip:ClearLines() self.lines = {} end
+function GameTooltip:AddLine(text) self.lines = self.lines or {} table.insert(self.lines, tostring(text)) end
+function GameTooltip:AddDoubleLine(l, r) self.lines = self.lines or {} table.insert(self.lines, tostring(l) .. " | " .. tostring(r)) end
+function GameTooltip:SetText(text) self.lines = { tostring(text) } end
+function M.tooltipText() return table.concat(GameTooltip.lines or {}, "\n") end
+function IsControlKeyDown() return M.ctrl end
+
+-- TooltipDataProcessor: tests run the registered post-calls via M.showSpellTooltip.
+TooltipDataProcessor = { AddTooltipPostCall = function(kind, fn) M.tooltipPostCalls[kind] = M.tooltipPostCalls[kind] or {} table.insert(M.tooltipPostCalls[kind], fn) end }
+function M.showSpellTooltip(spellID)
+	GameTooltip.lines = { "Spell " .. spellID }
+	for _, fn in ipairs(M.tooltipPostCalls[1] or {}) do fn(GameTooltip, { id = spellID, type = 1 }) end
+	return M.tooltipText()
+end
 UIErrorsFrame = { AddMessage = function(_, msg) M.uiErrors = M.uiErrors or {} table.insert(M.uiErrors, msg) end }
 
 C_Timer = { After = function(_, fn) table.insert(M.timers, fn) end }
@@ -327,7 +352,7 @@ function GetNumSpecGroups() return M.numSpecGroups end
 function GetCritChance() return M.combat and { __secret = true } or 5.2 end
 function UnitHealth() return M.combat and { __secret = true } or 1000 end
 WOW_PROJECT_ID = 18
-Enum = { DamageMeterType = { DamageDone = 0 }, DamageMeterSessionType = { Overall = 0, Current = 1 } }
+Enum = { DamageMeterType = { DamageDone = 0 }, DamageMeterSessionType = { Overall = 0, Current = 1 }, TooltipDataType = { Spell = 1 } }
 C_AddOns = { GetAddOnMetadata = function() return "@project-version@" end }
 
 M.reset()

@@ -199,23 +199,9 @@ end
 local function nodeTooltip(self)
 	local t = tree and tree.talents[self.nodeID]
 	if not t then return end
-	local r = rankOf(t.id)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	GameTooltip:SetText(t.name, 1, 1, 1)
-	GameTooltip:AddLine(t.free and L["Granted automatically"] or ((L["Rank %d/%d"]):format(r, t.maxRanks)), 0.88, 0.71, 0.29)
-	local desc = Talents.Describe(t, r)
-	if desc then GameTooltip:AddLine(desc, 0.9, 0.9, 0.9, true) end
-	if r > 0 and r < t.maxRanks then
-		local nextDesc = Talents.Describe(t, r + 1)
-		if nextDesc then
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(L["Next rank:"], 0.56, 0.83, 0.63)
-			GameTooltip:AddLine(nextDesc, 0.56, 0.83, 0.63, true)
-		end
-	end
-	local req = r < t.maxRanks and requirementText(t.id)
-	if req and req ~= L["Maxed"] then GameTooltip:AddLine(req, 0.94, 0.63, 0.44, true) end
-	GameTooltip:AddLine(" ")
+	GameTooltip:ClearLines()
+	ns.TalentTooltip.Fill(GameTooltip, tree, ranks, graph, t, spellName)
 	GameTooltip:AddLine(L["Click: inspect · Shift-click: add rank · Right-click: remove rank"], 0.55, 0.57, 0.63, true)
 	GameTooltip:Show()
 end
