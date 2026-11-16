@@ -22,6 +22,7 @@ Model\SynergyGraph.lua
 Model\Talents.lua
 Model\Codecs\Loadout.lua
 Model\Codecs\Share.lua
+Model\Compare.lua
 
 Core\Probe.lua
 
@@ -32,5 +33,7 @@ UI\TooltipHooks.lua
 UI\Planner.lua
 UI\Share.lua
 UI\ApplyDialog.lua
+UI\Compare.lua
+UI\SynergyMap.lua
 UI\Launcher.lua
 UI\Settings.lua

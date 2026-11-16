@@ -261,3 +261,55 @@ function UI.TextArea(parent, width, height, readOnly)
 	end
 	return panel
 end
+
+-- Scrollable area in a panel: panel.Content is the scroll child; call
+-- panel:SetContentHeight(h) after laying it out.
+function UI.ScrollList(parent, width, height, bg, border)
+	local panel = UI.Panel(parent, bg or "panel", border or "border")
+	panel:SetSize(width, height)
+	local scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	scroll:SetPoint("TOPLEFT", 10, -10)
+	scroll:SetPoint("BOTTOMRIGHT", -28, 10)
+	local content = CreateFrame("Frame", nil, scroll)
+	content:SetSize(width - 40, 10)
+	scroll:SetScrollChild(content)
+	panel.Content = content
+	panel.Scroll = scroll
+	function panel:SetContentHeight(h)
+		content:SetHeight(math.max(h, 1))
+	end
+	return panel
+end
+
+-- Dropdown with the client's menu when available, else a button that cycles.
+-- items() returns { {key, label}, ... }; selected() the current key.
+function UI.Dropdown(parent, width, items, selected, onSelect)
+	local ok, dd = pcall(CreateFrame, "DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+	if ok and dd and dd.SetupMenu then
+		dd:SetWidth(width)
+		dd:SetupMenu(function(_, root)
+			for _, item in ipairs(items()) do
+				root:CreateRadio(item.label, function() return selected() == item.key end, function() onSelect(item.key) end)
+			end
+		end)
+		function dd:Refresh() if self.GenerateMenu then self:GenerateMenu() end end
+		return dd
+	end
+	local b = UI.Button(parent, "", "default", width, 28)
+	function b:Refresh()
+		for _, item in ipairs(items()) do
+			if item.key == selected() then self:SetLabel(item.label) end
+		end
+	end
+	b:SetScript("OnClick", function(self)
+		local list = items()
+		local idx = 0
+		for i, item in ipairs(list) do
+			if item.key == selected() then idx = i end
+		end
+		local nextItem = list[idx % #list + 1]
+		if nextItem then onSelect(nextItem.key) end
+		self:Refresh()
+	end)
+	return b
+end

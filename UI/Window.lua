@@ -18,8 +18,8 @@ local TITLE_H, RAIL_W = 56, 176
 local NAV = {
 	{ label = "Plan", items = {
 		{ key = "planner", label = "Talent planner" },
-		{ key = "synergy", label = "Synergy map", milestone = "M4" },
-		{ key = "compare", label = "Compare builds", milestone = "M4" },
+		{ key = "synergy", label = "Synergy map" },
+		{ key = "compare", label = "Compare builds" },
 		{ key = "presets", label = "Presets", milestone = "M6" },
 		{ key = "leveling", label = "Leveling path", milestone = "M6" },
 	} },
@@ -29,7 +29,7 @@ local NAV = {
 	} },
 	{ label = "Gear & share", items = {
 		{ key = "gear", label = "Stats & gear", milestone = "M6" },
-		{ key = "share", label = "Import / export", milestone = "M3" },
+		{ key = "share", label = "Import / export" },
 	} },
 }
 
