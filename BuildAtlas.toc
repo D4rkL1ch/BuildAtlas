@@ -1,0 +1,28 @@
+## Interface: 16001
+## Title: Build Atlas
+## Notes: Talent planner that explains why a build works: which spells each talent changes, what it scales with, and how talents feed each other.
+## Author: D4rkL1ch
+## Version: @project-version@
+## SavedVariables: BuildAtlasDB
+## SavedVariablesPerCharacter: BuildAtlasCharDB
+## Category: Combat
+## IconTexture: Interface\Icons\INV_Misc_Book_11
+
+# Load order: Core -> Data -> Model -> UI
+
+Core\Init.lua
+Core\Secrets.lua
+Core\Util.lua
+
+Data\Classes.lua
+
+Model\Plan.lua
+Model\SynergyGraph.lua
+Model\Talents.lua
+
+Core\Probe.lua
+
+UI\Theme.lua
+UI\Window.lua
+UI\Planner.lua
+UI\Launcher.lua

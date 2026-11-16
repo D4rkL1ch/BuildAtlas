@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Stats, gear and consumables</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.seg{font:600 12px Inter,sans-serif;height:30px;padding:0 10px;border:1px solid #3A4050;background:#171A21;color:#A3A7B3;cursor:pointer;margin-left:-1px}
+.seg.on{background:#2A2416;color:#F3E3B5;border-color:#7A6327;position:relative}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.panel{background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px}
+.num{font:500 13px 'JetBrains Mono',monospace;text-align:right}
+.ck{display:grid;grid-template-columns:18px 1fr 60px;gap:10px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid #22262F}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Stats &amp; gear · for Spec 1 Arms 31/20/0</div>
+    <div style="flex:1"></div>
+    <span style="font-size:12px;color:#8FD3A0">Pawn found · scales stay in sync</span>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="gear" hint-size="176px,744px"></dc-import>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px 20px;min-width:0">
+      <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+        <div class="h">Stat weights</div>
+        <div style="display:flex;flex-wrap:wrap"><sc-for list="{{srcs}}" as="s" hint-placeholder-count="3"><button class="{{s.cls}}" onClick="{{s.pick}}">{{s.label}}</button></sc-for></div>
+        <div style="font-size:12px;color:#A3A7B3;line-height:1.45">{{srcNote}}</div>
+        <sc-for list="{{weights}}" as="w" hint-placeholder-count="6">
+          <div style="display:grid;grid-template-columns:100px 1fr 44px;gap:10px;align-items:center;font-size:13px">
+            <span>{{w.n}}</span><div style="height:10px;background:#22262F;border-radius:5px"><div style="{{w.bar}}"></div></div><span class="num">{{w.v}}</span>
+          </div>
+        </sc-for>
+        <div style="flex:1"></div>
+        <button class="btn">Send to Pawn as “Build Atlas – Arms”</button>
+      </div>
+      <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+        <div class="h">Upgrade check · bags</div>
+        <div style="background:#0F1218;border:1px solid #4A5163;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:13px">
+          <div style="font-weight:700;color:#6AA8FF">[BAG ITEM NAME]</div>
+          <div style="color:#A3A7B3">Two-hand · Axe · 3.60 speed</div>
+          <div>+14 Strength · +1% crit</div>
+          <div style="border-top:1px solid #2C313D;margin-top:6px;padding-top:8px;display:flex;justify-content:space-between"><span style="color:#4FC3B5;font-weight:600">Build Atlas</span><span style="color:#8FD3A0;font-family:'JetBrains Mono',monospace">+6.2% vs equipped</span></div>
+          <div style="font-size:12px;color:#A3A7B3;line-height:1.45">Slower weapon: Mortal Strike and Overpower hit harder, Unbridled Wrath procs a bit less.</div>
+        </div>
+        <div class="h" style="margin-top:6px">Other upgrades found</div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #22262F"><span>[RING NAME] · bank</span><span class="num" style="color:#8FD3A0">+1.8%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #22262F"><span>[CLOAK NAME] · bags</span><span class="num" style="color:#F0A070">−0.4%</span></div>
+        <div style="font-size:12px;color:#8C92A0">Scores use the weights on the left. Refreshed when you leave combat.</div>
+      </div>
+      <div class="panel" style="display:flex;flex-direction:column;gap:4px">
+        <div class="h" style="margin-bottom:8px">Consumables, enchants &amp; gems</div>
+        <sc-for list="{{checks}}" as="c" hint-placeholder-count="7">
+          <div class="ck"><span style="{{c.dot}}" aria-hidden="true"></span><span><span style="display:block">{{c.n}}</span><span style="display:block;font-size:11px;color:#8C92A0;margin-top:2px">{{c.why}}</span></span><span class="num" style="{{c.qc}}">{{c.q}}</span></div>
+        </sc-for>
+        <div style="flex:1"></div>
+        <div style="font-size:12px;color:#A3A7B3;line-height:1.45">Counts cover bags and bank on all your characters. Missing items can go to your shopping list.</div>
+        <button class="btn" style="margin-top:6px">Add missing to shopping list</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var SRC = [
+  { k: 'est', label: 'Estimate', note: 'Worked out from spell coefficients and your talents. Rough — no simulation.', w: [['Strength', 1.00], ['Weapon DPS', 4.10], ['Crit %', 18.2], ['Hit %', 21.5], ['Agility', 0.62], ['Attack Power', 0.50]] },
+  { k: 'pawn', label: 'Pawn scale', note: 'Pawn Forever default for Arms, curated by the Pawn community.', w: [['Strength', 1.00], ['Weapon DPS', 3.80], ['Crit %', 20.0], ['Hit %', 19.0], ['Agility', 0.70], ['Attack Power', 0.50]] },
+  { k: 'sim', label: 'Sim import', note: 'Pasted from a SimC or MythicSim stat-weight run on 14 Nov.', w: [['Strength', 1.00], ['Weapon DPS', 4.40], ['Crit %', 17.1], ['Hit %', 23.8], ['Agility', 0.58], ['Attack Power', 0.50]] }
+];
+var CHECKS = [
+  ['Elixir of the Mongoose', 'Agility + crit; crit feeds Deep Wounds', 6, 1], ['Juju Power', 'Strength', 0, 1], ['Dense Sharpening Stone', 'Two-hand weapon damage', 12, 1],
+  ['Crusader on weapon', 'Strength proc', 1, 0], ['+Strength on gloves', 'Best glove enchant for this build', 0, 0], ['Major Healing Potion', 'Safety', 4, 1], ['Rage Potion', 'Extra rage for Mortal Strike', 0, 1]
+];
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var k = (this.state && this.state.k) || 'est';
+    var cur = SRC.find(function (s) { return s.k === k; });
+    return {
+      srcs: SRC.map(function (s) { return { label: s.label, cls: 'seg' + (s.k === k ? ' on' : ''), pick: function () { self.setState({ k: s.k }); } }; }),
+      srcNote: cur.note,
+      weights: cur.w.map(function (w) { return { n: w[0], v: w[1].toFixed(2), bar: 'height:10px;border-radius:5px;background:#E0B54A;width:' + Math.min(100, Math.round(w[1] / 24 * 100)) + '%' }; }),
+      checks: CHECKS.map(function (c) {
+        var ok = c[2] > 0;
+        var label = c[3] ? (ok ? '×' + c[2] : 'none') : (ok ? 'on' : 'missing');
+        return { n: c[0], why: c[1], q: label, qc: ok ? 'color:#8FD3A0' : 'color:#F0A070', dot: 'display:block;width:10px;height:10px;border-radius:5px;background:' + (ok ? '#5BB974' : '#F0A070') };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+package-as: BuildAtlas
+
+# Ship only the addon (same set as tools/deploy.ps1) plus LICENSE, which the
+# GPL requires in every package, and CHANGELOG.md. Dotfiles and .github are
+# skipped by default.
+ignore:
+  - tools
+  - docs
+  - design
+  - HANDOFF.md
+  - CLAUDE.md
+  - README.md
+  - BuildAtlas.code-workspace
+
+enable-nolib-creation: no
+
+# Release notes come from this hand-written file, not from commit messages.
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown

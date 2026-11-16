@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Fight report</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.panel{background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px}
+.fight{width:100%;text-align:left;border-radius:6px;padding:9px 10px;border:1px solid #2C313D;background:#171A21;color:#C4C7CF;font:500 12px Inter,sans-serif;cursor:pointer}
+.fight.on{border-color:#7A6327;background:#2A2416;color:#F3E3B5}
+.num{font:500 13px 'JetBrains Mono',monospace;text-align:right}
+.tag{font:600 10px Inter,sans-serif;border-radius:4px;padding:2px 6px;text-transform:uppercase;letter-spacing:.06em}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Fight report · Spec 1 Arms</div>
+    <div style="flex:1"></div>
+    <span style="font-size:12px;color:#A3A7B3">Built after combat from the game's damage meter</span>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="report" hint-size="176px,744px"></dc-import>
+    <div style="width:220px;flex:none;border-right:1px solid #2C313D;padding:16px 12px;display:flex;flex-direction:column;gap:6px;background:#111318">
+      <div class="h" style="margin-bottom:6px">Recent fights</div>
+      <sc-for list="{{fights}}" as="f" hint-placeholder-count="5">
+        <button class="{{f.cls}}" onClick="{{f.pick}}"><span style="display:block;font-weight:600">{{f.name}}</span><span style="display:block;margin-top:3px;color:#8C92A0">{{f.meta}}</span></button>
+      </sc-for>
+      <div style="flex:1"></div>
+      <button class="btn">Merge selected</button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:16px 20px;gap:14px;min-width:0">
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+        <div class="panel"><div class="h">Damage</div><div style="font:500 22px 'JetBrains Mono',monospace;margin-top:6px">{{dmg}}</div></div>
+        <div class="panel"><div class="h">Duration</div><div style="font:500 22px 'JetBrains Mono',monospace;margin-top:6px">{{dur}}</div></div>
+        <div class="panel"><div class="h">DPS</div><div style="font:500 22px 'JetBrains Mono',monospace;margin-top:6px;color:#E0B54A">{{dps}}</div></div>
+        <div class="panel"><div class="h">From talents (est.)</div><div style="font:500 22px 'JetBrains Mono',monospace;margin-top:6px;color:#4FC3B5">{{talPct}}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:14px;flex:1;min-height:0">
+        <div class="panel" style="display:flex;flex-direction:column;gap:8px">
+          <div class="h">By spell</div>
+          <sc-for list="{{spells}}" as="s" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:120px 1fr 70px;gap:10px;align-items:center;font-size:13px">
+              <span>{{s.n}}</span>
+              <div style="height:10px;background:#22262F;border-radius:5px"><div style="{{s.bar}}"></div></div>
+              <span class="num">{{s.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div class="h">Talent contribution</div><div style="font-size:11px;color:#8C92A0">estimate = spell damage × talent share</div></div>
+          <div style="display:grid;grid-template-columns:1fr 80px 56px 92px;gap:10px;font-size:11px;color:#8C92A0;padding-bottom:4px;border-bottom:1px solid #2C313D"><span>Talent</span><span style="text-align:right">Damage</span><span style="text-align:right">Share</span><span>Method</span></div>
+          <sc-for list="{{talents}}" as="t" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:1fr 80px 56px 92px;gap:10px;align-items:center;font-size:13px;padding:3px 0">
+              <span>{{t.n}}</span><span class="num">{{t.v}}</span><span class="num" style="color:#4FC3B5">{{t.p}}</span>
+              <span><span class="tag" style="{{t.tagStyle}}">{{t.m}}</span></span>
+            </div>
+          </sc-for>
+          <div style="flex:1"></div>
+          <div style="font-size:12px;color:#A3A7B3;line-height:1.5;border-top:1px solid #2C313D;padding-top:8px">“Modeled” uses the talent's % bonus on recorded spell damage. “Rough” talents depend on crits or procs the addon can't watch in combat, so treat those as ballpark.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var FIGHTS = [
+  { name: 'Hogger', meta: '1:12 · elite · 2 min ago', sec: 72, k: 1 },
+  { name: 'Defias Pillager ×3', meta: '0:41 · pack · 6 min ago', sec: 41, k: 0.55 },
+  { name: 'Training dummy', meta: '3:00 · benchmark · 20 min ago', sec: 180, k: 2.3 },
+  { name: 'Riverpaw Gnoll', meta: '0:18 · normal · 24 min ago', sec: 18, k: 0.24 }
+];
+var SP = [['Mortal Strike', 9420], ['Auto attack', 8210], ['Overpower', 3880], ['Deep Wounds', 2950], ['Heroic Strike', 2310], ['Rend', 1240]];
+var TL = [['Deep Wounds', 2950, 'Proc', 'r'], ['Two-Handed Weapon Spec.', 1120, 'Modeled', 'm'], ['Impale', 980, 'Rough', 'r'], ['Cruelty', 870, 'Rough', 'r'], ['Improved Overpower', 760, 'Rough', 'r'], ['Improved Rend', 530, 'Modeled', 'm'], ['Mortal Strike (ability)', 9420, 'Direct', 'd']];
+var fmt = function (n) { return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(Math.round(n)); };
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var i = (this.state && this.state.i) || 0;
+    var f = FIGHTS[i];
+    var tot = SP.reduce(function (a, s) { return a + s[1]; }, 0) * f.k;
+    var max = SP[0][1] * f.k;
+    var talTot = TL.slice(0, 6).reduce(function (a, t) { return a + t[1]; }, 0) * f.k;
+    var tagStyles = { m: 'background:#13231F;color:#8FE3D6;border:1px solid #2B5A52', r: 'background:#2A1A12;color:#F7B48A;border:1px solid #6B3A22', d: 'background:#1A2235;color:#B9C7F0;border:1px solid #3A4C78' };
+    return {
+      fights: FIGHTS.map(function (x, j) { return { name: x.name, meta: x.meta, cls: 'fight' + (j === i ? ' on' : ''), pick: function () { self.setState({ i: j }); } }; }),
+      dmg: fmt(tot), dur: Math.floor(f.sec / 60) + ':' + ('0' + (f.sec % 60)).slice(-2), dps: fmt(tot / f.sec), talPct: Math.round(talTot / tot * 100) + '%',
+      spells: SP.map(function (s) { var v = s[1] * f.k; return { n: s[0], v: fmt(v), bar: 'height:10px;border-radius:5px;background:#E0B54A;width:' + Math.round(v / max * 100) + '%' }; }),
+      talents: TL.map(function (t) { var v = t[1] * f.k; return { n: t[0], v: fmt(v), p: Math.round(v / tot * 100) + '%', m: t[2], tagStyle: tagStyles[t[3]] }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

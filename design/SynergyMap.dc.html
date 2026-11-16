@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Synergy map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.seg{font:600 12px Inter,sans-serif;height:32px;padding:0 12px;border:1px solid #3A4050;background:#171A21;color:#A3A7B3;cursor:pointer}
+.seg.on{background:#2A2416;color:#F3E3B5;border-color:#7A6327}
+.card{width:100%;text-align:left;border-radius:6px;padding:8px 10px;font:500 12px Inter,sans-serif;cursor:pointer;border:1px solid #2C313D;background:#171A21;color:#C4C7CF}
+.card.hot{border-color:#4FC3B5;background:#13231F;color:#FFFFFF}
+.card.sel{border-color:#FFFFFF;background:#22262F;color:#FFFFFF}
+.card.dim{opacity:.45}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.step{border:1px solid #3A4050;background:#1B1E26;border-radius:6px;padding:6px 10px;font:500 12px Inter,sans-serif;color:#E7E4DA}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Synergy map · Scratch plan (31 / 20 / 0)</div>
+    <div style="flex:1"></div>
+    <div style="display:flex">
+      <button class="{{mineCls}}" style="border-radius:6px 0 0 6px" onClick="{{showMine}}">My build only</button>
+      <button class="{{allCls}}" style="border-left:none;border-radius:0 6px 6px 0" onClick="{{showAll}}">All talents</button>
+    </div>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="synergy" hint-size="176px,744px"></dc-import>
+    <div style="flex:1;display:flex;flex-direction:column;padding:16px 20px;gap:16px;min-width:0">
+      <div style="font-size:13px;color:#A3A7B3">Pick a spell to see which talents change it and which stats it scales with. Links come from spell-effect data, with a small hand-checked list of fixes per class.</div>
+      <div style="flex:1;display:grid;grid-template-columns:1.1fr 40px 1fr 40px .8fr;gap:0;min-height:0">
+        <div style="display:flex;flex-direction:column;gap:6px;overflow:auto;padding-right:4px">
+          <div style="font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Talents</div>
+          <sc-for list="{{talents}}" as="t" hint-placeholder-count="8">
+            <div class="{{t.cls}}" style="display:flex;justify-content:space-between;gap:8px"><span>{{t.name}}</span><span style="font-family:'JetBrains Mono',monospace;color:#E0B54A">{{t.rank}}</span></div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;color:#4FC3B5" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></div>
+        <div style="display:flex;flex-direction:column;gap:6px;overflow:auto;padding-right:4px">
+          <div style="font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Spells</div>
+          <sc-for list="{{spells}}" as="s" hint-placeholder-count="8">
+            <button class="{{s.cls}}" onClick="{{s.pick}}" style="display:flex;justify-content:space-between"><span style="font-weight:600">{{s.name}}</span><span style="color:#4FC3B5;font-family:'JetBrains Mono',monospace">{{s.n}} talents</span></button>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;color:#6AA8FF" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Scales with</div>
+          <sc-for list="{{stats}}" as="st" hint-placeholder-count="6">
+            <div class="{{st.cls}}">{{st.name}}</div>
+          </sc-for>
+          <div style="margin-top:10px;background:#181B22;border:1px solid #2C313D;border-radius:6px;padding:10px 12px;font-size:12px;line-height:1.5;color:#C4C7CF">
+            <div style="font-weight:600;color:#FFFFFF;margin-bottom:4px">{{selName}}</div>{{selNote}}
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+        <div style="background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+          <div style="font:600 11px Inter,sans-serif;color:#4FC3B5;text-transform:uppercase;letter-spacing:.1em">Proc chains</div>
+          <div class="flow"><span class="step">Melee crit</span><span aria-hidden="true" style="color:#4FC3B5">→</span><span class="step">Deep Wounds bleed</span><span style="font-size:11px;color:#8C92A0">fed by Cruelty, Impale, Improved Overpower</span></div>
+          <div class="flow"><span class="step">Dodge</span><span aria-hidden="true" style="color:#4FC3B5">→</span><span class="step">Overpower usable</span><span aria-hidden="true" style="color:#4FC3B5">→</span><span class="step">Crit</span><span aria-hidden="true" style="color:#4FC3B5">→</span><span class="step">Deep Wounds</span></div>
+        </div>
+        <div style="background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+          <div style="font:600 11px Inter,sans-serif;color:#E0B54A;text-transform:uppercase;letter-spacing:.1em">Resource loop · rage</div>
+          <div class="flow"><span class="step">Generators: Anger Management, Unbridled Wrath, auto attack</span><span aria-hidden="true" style="color:#E0B54A">→</span><span class="step">Spenders: Mortal Strike, Heroic Strike</span></div>
+          <div style="font-size:12px;color:#F0A070">Unbridled Wrath is weaker with a slow two-hander: 22% fewer procs than dual wield at this weapon speed (estimate).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var SPELLS = {
+  'Mortal Strike': { t: ['Two-Handed Weapon Spec.', 'Cruelty', 'Impale', 'Tactical Mastery', 'Anger Management', 'Sweeping Strikes', 'Enrage', 'Death Wish'], s: ['Weapon damage', 'Attack Power', 'Crit'], note: 'Main spender. Damage comes from weapon damage, so slow high-damage two-handers matter more than raw attack power.' },
+  'Overpower': { t: ['Improved Overpower', 'Cruelty', 'Impale', 'Two-Handed Weapon Spec.', 'Tactical Mastery', 'Deep Wounds'], s: ['Crit', 'Weapon damage'], note: 'Cheap crit engine: Improved Overpower makes most casts crit, and each crit starts Deep Wounds.' },
+  'Deep Wounds': { t: ['Deep Wounds', 'Cruelty', 'Impale'], s: ['Crit', 'Weapon damage'], note: 'Bleed fed by every melee crit. Its value goes up with crit chance and crit damage.' },
+  'Heroic Strike': { t: ['Improved Heroic Strike', 'Impale', 'Anger Management', 'Unbridled Wrath'], s: ['Strength', 'Attack Power'], note: 'Rage dump. Cheaper with Improved Heroic Strike; fed by every rage generator.' },
+  'Auto attack': { t: ['Two-Handed Weapon Spec.', 'Cruelty', 'Unbridled Wrath', 'Flurry', 'Enrage', 'Death Wish', 'Dual Wield Spec.'], s: ['Weapon damage', 'Attack speed', 'Hit', 'Crit'], note: 'Also your main rage source. Hit chance matters here first.' },
+  'Rend': { t: ['Improved Rend'], s: ['Attack Power'], note: 'Bleed. Only one talent touches it; low priority in this build.' },
+  'Battle Shout': { t: ['Improved Battle Shout', 'Booming Voice'], s: ['Attack Power'], note: 'Group buff. Improved Battle Shout helps every melee in your party.' },
+  'Whirlwind': { t: ['Sweeping Strikes'], s: ['Weapon damage'], note: 'Cleave tool on packs.' }
+};
+var MINE = { 'Improved Heroic Strike': '3/3', 'Improved Rend': '3/3', 'Tactical Mastery': '5/5', 'Improved Overpower': '2/2', 'Anger Management': '1/1', 'Deep Wounds': '3/3', 'Impale': '2/2', 'Two-Handed Weapon Spec.': '5/5', 'Sweeping Strikes': '1/1', 'Cruelty': '5/5', 'Unbridled Wrath': '5/5', 'Improved Battle Shout': '5/5' };
+var ALL_T = ['Improved Heroic Strike', 'Improved Rend', 'Tactical Mastery', 'Improved Overpower', 'Anger Management', 'Deep Wounds', 'Impale', 'Two-Handed Weapon Spec.', 'Sweeping Strikes', 'Cruelty', 'Unbridled Wrath', 'Improved Battle Shout', 'Booming Voice', 'Dual Wield Spec.', 'Enrage', 'Flurry', 'Death Wish'];
+var STATS = ['Weapon damage', 'Crit', 'Attack Power', 'Strength', 'Hit', 'Attack speed'];
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var s = this.state || {};
+    var sel = s.sel || 'Mortal Strike';
+    var all = !!s.all;
+    var cur = SPELLS[sel];
+    var list = all ? ALL_T : ALL_T.filter(function (n) { return MINE[n]; });
+    return {
+      mineCls: all ? 'seg' : 'seg on', allCls: all ? 'seg on' : 'seg',
+      showMine: function () { self.setState({ all: false }); }, showAll: function () { self.setState({ all: true }); },
+      talents: list.map(function (n) { return { name: n, rank: MINE[n] || '0', cls: 'card ' + (cur.t.indexOf(n) >= 0 ? 'hot' : 'dim') }; }),
+      spells: Object.keys(SPELLS).map(function (k) {
+        var n = SPELLS[k].t.filter(function (x) { return all || MINE[x]; }).length;
+        return { name: k, n: n, cls: 'card ' + (k === sel ? 'sel' : ''), pick: function () { self.setState({ sel: k }); } };
+      }),
+      stats: STATS.map(function (x) { return { name: x, cls: 'card ' + (cur.s.indexOf(x) >= 0 ? 'hot' : 'dim') }; }),
+      selName: sel, selNote: cur.note
+    };
+  }
+}
+</script>
+</body>
+</html>

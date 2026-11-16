@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Talent and spell tooltips</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width:440px;height:640px;box-sizing:border-box;padding:20px;background:#0B0D11;display:flex;flex-direction:column;gap:18px;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div role="tooltip" style="background:#0F1218;border:1px solid #4A5163;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)">
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <div style="font:700 17px Cinzel,serif;color:#FFFFFF">Deep Wounds</div>
+      <div style="font:500 12px 'JetBrains Mono',monospace;color:#E0B54A">Rank 2/3</div>
+    </div>
+    <div style="font-size:12px;color:#A3A7B3">Arms · tier 3 · requires 10 points in Arms</div>
+    <div style="font-size:13px;line-height:1.5">Your critical strikes make the target bleed for <span style="color:#FFFFFF;font-weight:600">40%</span> of your average weapon damage over 12 sec.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+      <div style="background:#181B22;border:1px solid #2C313D;border-radius:5px;padding:6px;text-align:center"><div style="font-size:10px;color:#8C92A0">Rank 1</div><div style="font:500 13px 'JetBrains Mono',monospace;color:#C4C7CF">20%</div></div>
+      <div style="background:#2A2416;border:1px solid #7A6327;border-radius:5px;padding:6px;text-align:center"><div style="font-size:10px;color:#E0B54A">Rank 2 · now</div><div style="font:500 13px 'JetBrains Mono',monospace;color:#F3E3B5">40%</div></div>
+      <div style="background:#16241B;border:1px solid #2E5A3B;border-radius:5px;padding:6px;text-align:center"><div style="font-size:10px;color:#8FD3A0">Rank 3 · next</div><div style="font:500 13px 'JetBrains Mono',monospace;color:#8FD3A0">60%</div></div>
+    </div>
+    <div style="height:1px;background:#2C313D"></div>
+    <div style="font:600 10px Inter,sans-serif;color:#4FC3B5;text-transform:uppercase;letter-spacing:.1em">Synergy</div>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:1.45">
+      <div><span style="color:#FFFFFF;font-weight:600">Triggered by</span> <span style="color:#C4C7CF">any melee crit: Mortal Strike, Overpower, Heroic Strike, auto attack</span></div>
+      <div><span style="color:#FFFFFF;font-weight:600">Boosted by</span> <span style="color:#C4C7CF">Impale 2/2 (bigger crits), Cruelty 5/5 and Improved Overpower 2/2 (more crits)</span></div>
+      <div><span style="color:#FFFFFF;font-weight:600">Scales with</span> <span style="color:#B9C7F0">Crit · weapon damage</span> <span style="color:#8C92A0">(not spell power)</span></div>
+    </div>
+    <div style="height:1px;background:#2C313D"></div>
+    <div style="font:600 10px Inter,sans-serif;color:#F0A070;text-transform:uppercase;letter-spacing:.1em">Changed vs Classic</div>
+    <div style="font-size:12px;line-height:1.45;color:#C4C7CF">Classic: bleed based on weapon damage over 12 sec, same scaling. <span style="color:#F0A070">Forever: [CHANGE FROM DB2 DIFF]</span></div>
+    <div style="display:flex;justify-content:space-between;font:500 10px 'JetBrains Mono',monospace;color:#8C92A0;padding-top:2px"><span>Hold Ctrl: spell IDs + raw effects</span><span>DB2 1.60.1.70862</span></div>
+  </div>
+
+  <div style="font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em">Added to an action-bar spell tooltip</div>
+  <div role="tooltip" style="background:#0F1218;border:1px solid #4A5163;border-radius:8px;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;justify-content:space-between"><div style="font-weight:700;color:#FFFFFF">Mortal Strike</div><div style="font-size:12px;color:#A3A7B3">30 rage · 6 sec cooldown</div></div>
+    <div style="font-size:12px;color:#C4C7CF;line-height:1.45">Base tooltip text from the game stays above this block.</div>
+    <div style="border-top:1px solid #2C313D;padding-top:8px;display:flex;flex-direction:column;gap:4px;font-size:12px">
+      <div style="color:#4FC3B5;font-weight:600">Build Atlas · changed by 6 talents</div>
+      <div style="display:flex;justify-content:space-between"><span>Two-Handed Weapon Spec.</span><span style="color:#C4C7CF">+5% damage</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Cruelty</span><span style="color:#C4C7CF">+5% crit</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Impale</span><span style="color:#C4C7CF">+20% crit damage</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#8C92A0">+3 more (Shift to expand)</span><span></span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":440,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

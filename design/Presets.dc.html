@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Community presets</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.seg{font:600 12px Inter,sans-serif;height:30px;padding:0 10px;border:1px solid #3A4050;background:#171A21;color:#A3A7B3;cursor:pointer;margin-left:-1px}
+.seg.on{background:#2A2416;color:#F3E3B5;border-color:#7A6327;position:relative}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.card{width:100%;text-align:left;border-radius:8px;padding:12px;border:1px solid #2C313D;background:#181B22;color:#E7E4DA;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-family:Inter,sans-serif}
+.card.on{border-color:#7A6327;background:#211E16}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Community presets · Warrior</div>
+    <div style="flex:1"></div>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0;justify-content:center">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="presets" hint-size="176px,744px"></dc-import>
+    <div style="width:380px;flex:none;border-right:1px solid #2C313D;padding:16px;display:flex;flex-direction:column;gap:10px;background:#111318">
+      <div style="display:flex;flex-wrap:wrap"><sc-for list="{{roles}}" as="r" hint-placeholder-count="5"><button class="{{r.cls}}" onClick="{{r.pick}}">{{r.label}}</button></sc-for></div>
+      <sc-for list="{{list}}" as="p" hint-placeholder-count="4">
+        <button class="{{p.cls}}" onClick="{{p.pick}}">
+          <span style="display:flex;justify-content:space-between;width:100%"><span style="font-weight:700;font-size:14px">{{p.name}}</span><span style="font:500 12px 'JetBrains Mono',monospace;color:#E0B54A">{{p.split}}</span></span>
+          <span style="font-size:12px;color:#A3A7B3">{{p.role}} · {{p.src}}</span>
+        </button>
+      </sc-for>
+      <div style="flex:1"></div>
+      <div style="font-size:11px;color:#8C92A0;line-height:1.45">Bundled with the addon and updated with each release. Each preset credits its author and licence.</div>
+    </div>
+    <div style="flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:16px;min-width:0">
+      <div>
+        <div class="h">{{cur.role}}</div>
+        <div style="font:700 24px Cinzel,serif;color:#FFFFFF;margin-top:6px">{{cur.name}}</div>
+        <div style="font-size:13px;color:#A3A7B3;margin-top:4px">{{cur.split}} · by {{cur.src}} · tree version 70862</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+        <div style="background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+          <div class="h">Why it works</div>
+          <div style="font-size:13px;line-height:1.55">{{cur.why}}</div>
+        </div>
+        <div style="background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+          <div class="h">Key talents</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{cur.keys}}" as="k" hint-placeholder-count="4"><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;border:1px solid #2B5A52;background:#13231F;color:#BFE9E2;font-size:12px">{{k}}</span></sc-for></div>
+        </div>
+      </div>
+      <div style="background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+        <div class="h">How to play it (read before you pull)</div>
+        <ol style="margin:0;padding-left:20px;font-size:13px;line-height:1.7">
+          <sc-for list="{{cur.play}}" as="s" hint-placeholder-count="4"><li>{{s}}</li></sc-for>
+        </ol>
+      </div>
+      <div style="flex:1"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <a class="btn" href="SynergyMap.dc.html">See synergies</a>
+        <a class="btn" href="Compare.dc.html">Compare with Spec 1</a>
+        <a class="btn btn-primary" href="Main.dc.html">Load into planner</a>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var ROLES = ['All', 'Leveling', 'Dungeon', 'Raid', 'PvP'];
+var P = [
+  { name: 'Crit Arms', role: 'Leveling', split: '31/20/0', src: '[AUTHOR] (CC BY 4.0)', why: 'Stacks crit chance (Cruelty, Improved Overpower) and crit damage (Impale) so most big hits start a Deep Wounds bleed. Anger Management and Unbridled Wrath keep rage flowing between pulls.', keys: ['Mortal Strike', 'Deep Wounds', 'Impale', 'Cruelty'], play: ['Open with Charge, then Rend on targets that live long.', 'Mortal Strike on cooldown.', 'Overpower whenever it lights up — it almost always crits.', 'Dump extra rage into Heroic Strike.'] },
+  { name: 'Fury dual wield', role: 'Dungeon', split: '17/34/0', src: '[AUTHOR] (CC BY 4.0)', why: 'Fast off-hand swings feed Unbridled Wrath and Flurry. More swings mean more rage and more crits.', keys: ['Bloodthirst', 'Flurry', 'Dual Wield Spec.', 'Death Wish'], play: ['Bloodthirst on cooldown.', 'Whirlwind on packs.', 'Heroic Strike when rage is above 50.', 'Save Death Wish for elites and bosses.'] },
+  { name: 'Shield tank', role: 'Dungeon', split: '5/5/41', src: '[AUTHOR] (CC BY 4.0)', why: 'Shield Specialization and Improved Shield Block turn blocks into rage and Revenge procs; Defiance raises threat on every Sunder.', keys: ['Shield Slam', 'Improved Shield Block', 'Defiance', 'Last Stand'], play: ['Shield Slam on cooldown.', 'Revenge whenever it is usable.', 'Sunder Armor to fill.', 'Shield Block before big hits.'] },
+  { name: 'Mortal Strike PvP', role: 'PvP', split: '31/5/15', src: '[AUTHOR] (CC BY 4.0)', why: 'Keeps the healing cut from Mortal Strike while Protection points add survival for long fights.', keys: ['Mortal Strike', 'Tactical Mastery', 'Last Stand'], play: ['Keep Mortal Strike on healers and their targets.', 'Stance-dance for Overpower and interrupts.', 'Use Last Stand before you drop low, not after.'] }
+];
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var s = this.state || {};
+    var role = s.role || 'All';
+    var list = P.filter(function (p) { return role === 'All' || p.role === role; });
+    var sel = s.sel && list.some(function (p) { return p.name === s.sel; }) ? s.sel : (list[0] || P[0]).name;
+    var cur = P.find(function (p) { return p.name === sel; });
+    return {
+      roles: ROLES.map(function (r) { return { label: r, cls: 'seg' + (r === role ? ' on' : ''), pick: function () { self.setState({ role: r }); } }; }),
+      list: list.map(function (p) { return { name: p.name, split: p.split, role: p.role, src: p.src, cls: 'card' + (p.name === sel ? ' on' : ''), pick: function () { self.setState({ sel: p.name }); } }; }),
+      cur: cur
+    };
+  }
+}
+</script>
+</body>
+</html>

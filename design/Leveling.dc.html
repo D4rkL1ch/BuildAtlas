@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Leveling path and dual spec</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.panel{background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px}
+.lv{height:52px;border-radius:6px;border:1px solid #2C313D;background:#171A21;color:#C4C7CF;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:Inter,sans-serif;padding:0}
+.lv.done{background:#1F2A24;border-color:#2E5A3B;color:#E7E4DA}
+.lv.now{box-shadow:0 0 0 2px #E0B54A}
+.lv.mile{border-color:#7A6327}
+.lv.on{background:#22262F;border-color:#FFFFFF;color:#FFFFFF}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Leveling path · Crit Arms · you are level 34</div>
+    <div style="flex:1"></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#A3A7B3"><input type="checkbox" checked="checked" style="accent-color:#E0B54A">Remind me on level-up</label>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0;justify-content:center">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="leveling" hint-size="176px,744px"></dc-import>
+    <div style="flex:1;display:flex;flex-direction:column;padding:16px 20px;gap:14px;min-width:0">
+      <div style="display:flex;gap:16px;font-size:12px;color:#A3A7B3;align-items:center">
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;background:#1F2A24;border:1px solid #2E5A3B"></span>Learned</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;border:2px solid #E0B54A"></span>Current level</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;border:1px solid #7A6327"></span>Milestone talent</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(17,minmax(0,1fr));gap:6px">
+        <sc-for list="{{levels}}" as="l" hint-placeholder-count="51">
+          <button class="{{l.cls}}" onClick="{{l.pick}}" aria-label="Level {{l.lv}}: {{l.full}}"><span style="font:500 10px 'JetBrains Mono',monospace;color:#8C92A0">{{l.lv}}</span><span style="font:700 12px Inter,sans-serif">{{l.g}}</span></button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:14px;flex:1;min-height:0">
+        <div class="panel" style="display:flex;flex-direction:column;gap:10px">
+          <div class="h">Level {{selLv}}</div>
+          <div style="font:700 20px Cinzel,serif;color:#FFFFFF">{{selName}}</div>
+          <div style="font-size:13px;line-height:1.55;color:#C4C7CF">{{selWhy}}</div>
+          <div style="flex:1"></div>
+          <div style="font-size:12px;color:#8C92A0">Points by then: {{selSplit}}</div>
+        </div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div class="h">Dual spec plan · unlocks at 40</div><div style="font:500 12px 'JetBrains Mono',monospace;color:#E0B54A">50g · you have [GOLD]</div></div>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+            <div style="border:1px solid #3A4C78;background:#1A2235;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:12px;color:#B9C7F0;font-weight:600">Spec 1 · questing</div>
+              <div style="font-weight:700">Crit Arms</div><div style="font:500 12px 'JetBrains Mono',monospace;color:#A3A7B3">31/20/0 at 60</div>
+            </div>
+            <div style="border:1px solid #6B3A22;background:#2A1A12;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:12px;color:#F7B48A;font-weight:600">Spec 2 · dungeons</div>
+              <div style="font-weight:700">Shield tank</div><div style="font:500 12px 'JetBrains Mono',monospace;color:#A3A7B3">5/5/31 at 40 → 5/5/41 at 60</div>
+            </div>
+          </div>
+          <div style="font-size:13px;line-height:1.55;color:#C4C7CF">Two specs means no reset trips. Without dual spec, swapping costs a reset at a trainer: 1g the first time, more each time after.</div>
+          <div style="flex:1"></div>
+          <div style="display:flex;gap:10px;justify-content:flex-end"><a class="btn" href="Presets.dc.html">Pick a preset for Spec 2</a><a class="btn btn-primary" href="Main.dc.html">Plan Spec 2</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var PATH = [
+  ['Deflection', 'Df', 'Free parry while you learn to stance-dance.'], ['Deflection', 'Df', ''], ['Deflection', 'Df', ''], ['Improved Heroic Strike', 'IH', 'Cheaper Heroic Strike: your main rage dump while leveling.'], ['Improved Heroic Strike', 'IH', ''],
+  ['Improved Heroic Strike', 'IH', ''], ['Improved Rend', 'IR', 'Rend ticks hard on long fights against single mobs.'], ['Improved Rend', 'IR', ''], ['Improved Rend', 'IR', ''], ['Deflection', 'Df', ''],
+  ['Tactical Mastery', 'TM', 'Keep rage when you swap stance for Overpower.'], ['Tactical Mastery', 'TM', ''], ['Tactical Mastery', 'TM', ''], ['Tactical Mastery', 'TM', ''], ['Tactical Mastery', 'TM', ''],
+  ['Anger Management', 'AM', 'Milestone: steady rage between pulls.'], ['Deep Wounds', 'DW', 'Every crit now bleeds.'], ['Deep Wounds', 'DW', ''], ['Deep Wounds', 'DW', ''], ['Improved Overpower', 'IO', 'Overpower almost always crits → more Deep Wounds.'],
+  ['Improved Overpower', 'IO', ''], ['Impale', 'Im', 'Crits hit 20% harder.'], ['Impale', 'Im', ''], ['Two-Handed Weapon Spec.', '2H', ''], ['Two-Handed Weapon Spec.', '2H', ''],
+  ['Two-Handed Weapon Spec.', '2H', ''], ['Two-Handed Weapon Spec.', '2H', ''], ['Two-Handed Weapon Spec.', '2H', ''], ['Sweeping Strikes', 'SS', 'Cleave on packs.'], ['Deflection', 'Df', ''],
+  ['Mortal Strike', 'MS', 'Milestone: your main attack. Big power spike at level 40.'],
+  ['Cruelty', 'Cr', 'Then into Fury for crit.'], ['Cruelty', 'Cr', ''], ['Cruelty', 'Cr', ''], ['Cruelty', 'Cr', ''], ['Cruelty', 'Cr', ''],
+  ['Unbridled Wrath', 'UW', 'More rage from auto attacks.'], ['Unbridled Wrath', 'UW', ''], ['Unbridled Wrath', 'UW', ''], ['Unbridled Wrath', 'UW', ''], ['Unbridled Wrath', 'UW', ''],
+  ['Improved Battle Shout', 'IB', ''], ['Improved Battle Shout', 'IB', ''], ['Improved Battle Shout', 'IB', ''], ['Improved Battle Shout', 'IB', ''], ['Improved Battle Shout', 'IB', ''],
+  ['Booming Voice', 'BV', ''], ['Booming Voice', 'BV', ''], ['Booming Voice', 'BV', ''], ['Booming Voice', 'BV', ''], ['Booming Voice', 'BV', 'Level 60: build complete.']
+];
+var MILES = [20, 25, 30, 40];
+var NOW = 34;
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var sel = (this.state && this.state.sel) || 35;
+    var p = PATH[sel - 10];
+    var arms = Math.min(31, sel - 9), fury = Math.max(0, sel - 9 - 31);
+    return {
+      levels: PATH.map(function (x, i) {
+        var lv = i + 10;
+        var cls = 'lv' + (lv <= NOW ? ' done' : '') + (lv === NOW ? ' now' : '') + (MILES.indexOf(lv) >= 0 ? ' mile' : '') + (lv === sel ? ' on' : '');
+        return { lv: lv, g: x[1], full: x[0], cls: cls, pick: function () { self.setState({ sel: lv }); } };
+      }),
+      selLv: sel, selName: p[0], selWhy: p[2] || 'Next rank of ' + p[0] + '.', selSplit: arms + '/' + fury + '/0'
+    };
+  }
+}
+</script>
+</body>
+</html>

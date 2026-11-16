@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Launcher and notices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.item{display:flex;justify-content:space-between;align-items:center;width:100%;height:36px;padding:0 12px;background:none;border:none;border-radius:5px;color:#E7E4DA;font:500 13px Inter,sans-serif;cursor:pointer;text-align:left}
+.item:hover{background:#232733}
+.toast{background:#14161B;border:1px solid #4A5163;border-radius:8px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 10px 26px rgba(0,0,0,.5)}
+.lnk{background:none;border:none;padding:0;color:#E0B54A;font:600 12px Inter,sans-serif;cursor:pointer;text-decoration:underline}
+</style>
+</helmet>
+<div style="width:720px;height:480px;box-sizing:border-box;padding:28px;background:#0B0D11;display:grid;grid-template-columns:300px 1fr;gap:28px;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="position:relative">
+    <div style="font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Minimap button + menu</div>
+    <div aria-hidden="true" style="position:absolute;left:150px;top:40px;width:140px;height:140px;border-radius:70px;background:#1B2620;border:3px solid #3A4050"></div>
+    <button aria-label="Build Atlas" style="position:absolute;left:132px;top:150px;width:36px;height:36px;border-radius:18px;border:2px solid #E0B54A;background:#2A2416;color:#E0B54A;font:700 12px Cinzel,serif;cursor:pointer">BA</button>
+    <div role="menu" style="position:absolute;left:0;top:198px;width:260px;background:#14161B;border:1px solid #4A5163;border-radius:8px;padding:6px;box-shadow:0 10px 26px rgba(0,0,0,.5)">
+      <button class="item" role="menuitem">Talent planner<span style="font:500 11px 'JetBrains Mono',monospace;color:#8C92A0">click</span></button>
+      <button class="item" role="menuitem">Last fight report<span style="font:500 11px 'JetBrains Mono',monospace;color:#8C92A0">shift-click</span></button>
+      <button class="item" role="menuitem">Arm benchmark</button>
+      <div style="height:1px;background:#2C313D;margin:4px 6px"></div>
+      <button class="item" role="menuitem">Settings</button>
+      <div style="font:500 11px 'JetBrains Mono',monospace;color:#8C92A0;padding:6px 12px">/atlas · /atlas report · /atlas bench</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em">Notices (top-center, fade after 8 s)</div>
+    <div class="toast" role="status"><span style="width:10px;height:10px;border-radius:5px;background:#4FC3B5;margin-top:4px;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><div style="font-weight:600">Fight report ready</div><div style="font-size:12px;color:#A3A7B3">Hogger · 1:12 · 412 DPS · 31% from talents (est.)</div><button class="lnk" style="align-self:flex-start">Open report</button></div></div>
+    <div class="toast" role="status" style="border-color:#6B3A22"><span style="width:10px;height:10px;border-radius:5px;background:#F0A070;margin-top:4px;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><div style="font-weight:600">Talent data is older than your game</div><div style="font-size:12px;color:#A3A7B3;line-height:1.45">Data 70450, client 70862. Tree layout is read live; per-rank numbers may be off until the addon updates.</div></div></div>
+    <div class="toast" role="status"><span style="width:10px;height:10px;border-radius:5px;background:#8C92A0;margin-top:4px;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><div style="font-weight:600">Paused in combat</div><div style="font-size:12px;color:#A3A7B3">Windows stay open but read-only. Analysis runs when combat ends.</div></div></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":720,"height":480}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

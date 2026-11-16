@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Import and export</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.seg{font:600 12px Inter,sans-serif;height:32px;padding:0 12px;border:1px solid #3A4050;background:#171A21;color:#A3A7B3;cursor:pointer;margin-left:-1px}
+.seg.on{background:#2A2416;color:#F3E3B5;border-color:#7A6327;position:relative}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.box{width:100%;box-sizing:border-box;background:#0F1115;border:1px solid #3A4050;border-radius:6px;color:#D6D3C9;font:400 12px 'JetBrains Mono',monospace;padding:10px;resize:none;line-height:1.5}
+</style>
+</helmet>
+<div style="width:960px;height:680px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Import / export</div>
+    <div style="flex:1"></div>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="share" h="624" hint-size="176px,624px"></dc-import>
+    <div style="flex:1;display:flex;flex-direction:column;padding:16px 20px;gap:14px;min-width:0">
+      <div class="h">Export · Scratch plan (Arms 31/20/0)</div>
+      <div style="display:flex;flex-wrap:wrap" role="tablist" aria-label="Export format">
+        <sc-for list="{{formats}}" as="f" hint-placeholder-count="5">
+          <button class="{{f.cls}}" role="tab" aria-selected="{{f.on}}" onClick="{{f.pick}}">{{f.label}}</button>
+        </sc-for>
+      </div>
+      <label for="out" style="font-size:12px;color:#A3A7B3">{{hint}}</label>
+      <textarea id="out" class="box" readonly="readonly" style="height:120px">{{text}}</textarea>
+      <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-primary">Select all</button><span style="font-size:12px;color:#8C92A0">then Ctrl+C — addons can't write to the clipboard directly</span></div>
+      <div style="height:1px;background:#2C313D;margin:4px 0"></div>
+      <div class="h">Import</div>
+      <label for="in" style="font-size:12px;color:#A3A7B3">Paste a Build Atlas string or a Wowhead, Talents Forever, wowforevertalent or Method link</label>
+      <textarea id="in" class="box" style="height:56px">https://www.wowhead.com/forever/talent-calc/warrior/[BUILD-CODE]</textarea>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:12px;color:#8FD3A0;background:#16241B;border:1px solid #2E5A3B;border-radius:4px;padding:4px 8px">Detected: Wowhead · Warrior · 31/20/0 · tree version matches</span>
+        <div style="flex:1"></div>
+        <button class="btn">Load as build B (compare)</button>
+        <button class="btn btn-primary">Load into scratch plan</button>
+      </div>
+      <div style="height:1px;background:#2C313D;margin:4px 0"></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="h" style="margin-right:6px">Send in game</div>
+        <button class="btn">To party</button><button class="btn">To guild</button><button class="btn">To player…</button>
+        <span style="font-size:12px;color:#F0A070">Not available inside instances</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":960,"height":680}}'>
+var F = [
+  { k: 'atlas', label: 'Build Atlas string', hint: 'Compact string with tree version stamp. Imports in any copy of Build Atlas.', text: '!BA1!WAR!70862!3-5-3-5-2-1-3-2-5-1-0-1:0-5-5-5-0-0-0-0-0:0' },
+  { k: 'wh', label: 'Wowhead link', hint: 'Opens in the Wowhead Forever talent calculator.', text: 'https://www.wowhead.com/forever/talent-calc/warrior/[BUILD-CODE]' },
+  { k: 'tf', label: 'Talents Forever link', hint: 'Opens on talentsforever.com and in the Talents Forever addon.', text: 'https://talentsforever.com/warrior/[BUILD-CODE]-5' },
+  { k: 'simc', label: 'SimC profile', hint: 'Character + gear + talents for simc-forever. Read out of combat.', text: 'warrior="Yourname"\nlevel=60\nrace=human\nspec=[FOREVER-SPEC]\ntalents=[EXPORTED-TALENTS]\nhead=,id=[ITEM-ID]\n# … all equipped slots' },
+  { k: 'ms', label: 'MythicSim', hint: 'Profile for the MythicSim web simulator.', text: '{"class":"warrior","level":60,"talents":"[EXPORTED-TALENTS]","gear":[ … ]}' }
+];
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var k = (this.state && this.state.k) || 'atlas';
+    var cur = F.find(function (f) { return f.k === k; });
+    return {
+      formats: F.map(function (f, i) {
+        var on = f.k === k;
+        var cls = 'seg' + (on ? ' on' : '');
+        return { label: f.label, cls: cls, on: on ? 'true' : 'false', pick: function () { self.setState({ k: f.k }); } };
+      }),
+      hint: cur.hint, text: cur.text
+    };
+  }
+}
+</script>
+</body>
+</html>

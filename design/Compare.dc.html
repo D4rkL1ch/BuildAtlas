@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Compare builds</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.sel{height:34px;background:#171A21;color:#E7E4DA;border:1px solid #3A4050;border-radius:6px;font:600 13px Inter,sans-serif;padding:0 8px}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.panel{background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px}
+.li{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #22262F}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Compare builds</div>
+    <div style="flex:1"></div>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0;justify-content:center">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="compare" hint-size="176px,744px"></dc-import>
+    <div style="flex:1;display:flex;flex-direction:column;padding:16px 20px;gap:14px;min-width:0">
+      <div style="display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:10px">
+        <div style="display:flex;gap:10px;align-items:center"><label for="a" style="font:700 14px Cinzel,serif;color:#6AA8FF">A</label><select id="a" class="sel" style="flex:1"><option>Spec 1 · Arms 31/20/0 (active)</option></select></div>
+        <button class="btn" aria-label="Swap A and B" style="justify-content:center">⇄</button>
+        <div style="display:flex;gap:10px;align-items:center"><label for="b" style="font:700 14px Cinzel,serif;color:#F0A070">B</label><select id="b" class="sel" style="flex:1"><option>Scratch · Arms 31/5/15</option><option>Spec 2 · Protection</option><option>Preset · Fury dual wield</option></select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;flex:1;min-height:0">
+        <div class="panel" style="display:flex;flex-direction:column;gap:10px">
+          <div class="h">Talent difference</div>
+          <div style="font-size:12px;color:#6AA8FF;font-weight:600;margin-top:4px">Only in A</div>
+          <div class="li"><span>Cruelty</span><span style="font-family:'JetBrains Mono',monospace">5</span></div>
+          <div class="li"><span>Unbridled Wrath</span><span style="font-family:'JetBrains Mono',monospace">5</span></div>
+          <div class="li"><span>Improved Battle Shout</span><span style="font-family:'JetBrains Mono',monospace">5</span></div>
+          <div style="font-size:12px;color:#F0A070;font-weight:600;margin-top:6px">Only in B</div>
+          <div class="li"><span>Shield Specialization</span><span style="font-family:'JetBrains Mono',monospace">5</span></div>
+          <div class="li"><span>Toughness</span><span style="font-family:'JetBrains Mono',monospace">5</span></div>
+          <div class="li"><span>Last Stand</span><span style="font-family:'JetBrains Mono',monospace">1</span></div>
+          <div class="li"><span>Improved Shield Block</span><span style="font-family:'JetBrains Mono',monospace">3</span></div>
+          <div style="font-size:12px;color:#A3A7B3;margin-top:6px">Shared: 31 points in Arms (identical)</div>
+        </div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:10px">
+          <div class="h">Spells changed (talent count)</div>
+          <div style="display:grid;grid-template-columns:1fr 40px 40px;font-size:11px;color:#8C92A0;margin-top:4px"><span>Spell</span><span style="color:#6AA8FF">A</span><span style="color:#F0A070">B</span></div>
+          <sc-for list="{{spells}}" as="s" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:1fr 40px 40px;font-size:13px;padding:4px 0;border-bottom:1px solid #22262F"><span>{{s.n}}</span><span style="font-family:'JetBrains Mono',monospace">{{s.a}}</span><span style="font-family:'JetBrains Mono',monospace">{{s.b}}</span></div>
+          </sc-for>
+        </div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+          <div class="h">Stat lean</div>
+          <sc-for list="{{lean}}" as="l" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:12px">{{l.n}}</div>
+              <div style="height:8px;background:#22262F;border-radius:4px"><div style="{{l.aw}}"></div></div>
+              <div style="height:8px;background:#22262F;border-radius:4px"><div style="{{l.bw}}"></div></div>
+            </div>
+          </sc-for>
+          <div style="font-size:11px;color:#8C92A0;line-height:1.4">Share of talent value tied to each stat. Rough, from data — not a simulation.</div>
+        </div>
+      </div>
+      <div class="panel" style="display:flex;gap:24px;align-items:center">
+        <div style="flex:1;font-size:13px;line-height:1.5"><span style="font-weight:600;color:#FFFFFF">Summary:</span> B swaps 15 Fury points for Protection survivability. Mortal Strike loses 1 modifier and auto attack loses 2, while Shield Block gains 2. Expect lower damage and better survival while leveling solo.</div>
+        <a class="btn" href="Main.dc.html">Open B in planner</a>
+        <a class="btn" href="Benchmark.dc.html">Benchmark both</a>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var SP = [['Mortal Strike', 6, 5], ['Overpower', 5, 4], ['Auto attack', 3, 1], ['Deep Wounds', 3, 2], ['Heroic Strike', 4, 3], ['Battle Shout', 1, 0], ['Shield Block', 0, 2]];
+var LEAN = [['Crit', 34, 26], ['Weapon damage', 30, 33], ['Attack Power', 18, 14], ['Hit', 10, 6], ['Armor / Block', 0, 21]];
+class Component extends DCLogic {
+  renderVals() {
+    var bar = function (v, c) { return 'height:8px;border-radius:4px;background:' + c + ';width:' + Math.round(v / 40 * 100) + '%'; };
+    return {
+      spells: SP.map(function (x) { return { n: x[0], a: x[1], b: x[2] }; }),
+      lean: LEAN.map(function (x) { return { n: x[0] + ' · A ' + x[1] + '% / B ' + x[2] + '%', aw: bar(x[1], '#6AA8FF'), bw: bar(x[2], '#F0A070') }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

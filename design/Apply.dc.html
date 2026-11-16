@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Apply build dialog states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.dlg{background:#14161B;border:1px solid #4A5163;border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 16px 40px rgba(0,0,0,.55)}
+.cap{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.ttl{font:700 18px Cinzel,serif;color:#FFFFFF}
+.li{display:flex;justify-content:space-between;font-size:13px}
+</style>
+</helmet>
+<div style="width:1280px;height:560px;box-sizing:border-box;padding:32px;background:#0B0D11;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:start;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="cap">State 1 · Ready to apply</div>
+    <div class="dlg" role="dialog" aria-label="Apply build to Spec 1">
+      <div class="ttl">Apply to Spec 1?</div>
+      <div style="font-size:13px;color:#A3A7B3;line-height:1.5">Build Atlas will learn these points through the game's own talent system. It never removes points.</div>
+      <div style="background:#181B22;border:1px solid #2C313D;border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:6px">
+        <div class="li"><span>Cruelty</span><span style="color:#8FD3A0;font-family:'JetBrains Mono',monospace">+3 → 5/5</span></div>
+        <div class="li"><span>Unbridled Wrath</span><span style="color:#8FD3A0;font-family:'JetBrains Mono',monospace">+5 → 5/5</span></div>
+        <div class="li" style="color:#A3A7B3"><span>Unspent after apply</span><span style="font-family:'JetBrains Mono',monospace">0</span></div>
+      </div>
+      <div style="font-size:12px;color:#8C92A0">Saving talents is a short cast. Stay still and out of combat.</div>
+      <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn">Cancel</button><button class="btn btn-primary">Learn 8 points</button></div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="cap">State 2 · Blocked</div>
+    <div class="dlg" role="dialog" aria-label="Cannot apply build">
+      <div class="ttl">Can't apply right now</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:10px;align-items:flex-start;background:#2A1A12;border:1px solid #6B3A22;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.45"><span style="color:#F0A070;font-weight:700">!</span><span>You're in combat. Apply unlocks when combat ends.</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;background:#2A1A12;border:1px solid #6B3A22;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.45"><span style="color:#F0A070;font-weight:700">!</span><span>The game's talent window has unsaved changes. Save or undo them there first.</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;background:#181B22;border:1px solid #2C313D;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.45"><span style="color:#6AA8FF;font-weight:700">i</span><span>This plan removes 8 Fury points. Reset talents at a class trainer (costs gold, rising with each reset), then apply again.</span></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn">Close</button><button class="btn btn-primary" disabled>Learn 8 points</button></div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="cap">State 3 · Saving, then result</div>
+    <div class="dlg" role="dialog" aria-label="Saving talents">
+      <div class="ttl">Saving talents…</div>
+      <div style="height:14px;background:#22262F;border-radius:7px;overflow:hidden" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Saving talents"><div style="width:60%;height:100%;background:#E0B54A"></div></div>
+      <div style="font:500 12px 'JetBrains Mono',monospace;color:#A3A7B3">0.9 s of 1.5 s</div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn">Stop</button></div>
+    </div>
+    <div class="dlg" role="status" style="padding:14px 16px;gap:6px;border-color:#2E5A3B"><div style="font-weight:700;color:#8FD3A0">Spec 1 updated · 8 points learned</div><div style="font-size:12px;color:#A3A7B3">Plan and Spec 1 now match.</div></div>
+    <div class="dlg" role="alert" style="padding:14px 16px;gap:6px;border-color:#6B3A22"><div style="font-weight:700;color:#F0A070">Save failed — nothing changed</div><div style="font-size:12px;color:#A3A7B3">The cast was interrupted. Staged points were dropped. <button style="background:none;border:none;padding:0;color:#E0B54A;font:600 12px Inter,sans-serif;cursor:pointer;text-decoration:underline">Try again</button></div></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":560}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

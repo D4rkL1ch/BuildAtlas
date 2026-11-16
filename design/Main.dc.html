@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Talent planner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+a{color:#E0B54A}a:hover{color:#F3CF77}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.btn:hover{background:#2C3140}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.btn-primary:hover{background:#F0C65C}
+.seg{font:600 12px Inter,sans-serif;height:32px;padding:0 12px;border:1px solid #3A4050;background:#171A21;color:#A3A7B3;cursor:pointer}
+.seg.on{background:#2A2416;color:#F3E3B5;border-color:#7A6327}
+.node{position:relative;width:48px;height:48px;border-radius:8px;border:2px solid #3A4050;background:#1B1E26;color:#8C92A0;font:700 14px Inter,sans-serif;cursor:pointer;padding:0}
+.node:hover{border-color:#8C92A0}
+.node.has{border-color:#5BB974;color:#E7E4DA;background:#1F2A24}
+.node.max{border-color:#E0B54A;color:#F3E3B5;background:#2A2416}
+.node.locked{opacity:.4}
+.node.rel{box-shadow:0 0 0 3px #4FC3B5}
+.node.sel{box-shadow:0 0 0 3px #FFFFFF}
+.badge{position:absolute;right:-9px;bottom:-9px;background:#0E1014;border:1px solid #3A4050;border-radius:9px;font:500 10px 'JetBrains Mono',monospace;color:#E7E4DA;padding:1px 5px}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;border:1px solid #3A4050;background:#1B1E26;color:#D6D3C9;font:500 12px Inter,sans-serif;cursor:pointer}
+.chip:hover{border-color:#4FC3B5;color:#FFFFFF}
+.chip.stat{border-color:#4E5A7A;color:#B9C7F0;cursor:default}
+.row-btn{display:flex;justify-content:space-between;align-items:center;width:100%;gap:10px;text-align:left;background:#171A21;border:1px solid #2C313D;border-radius:6px;padding:8px 10px;color:#E7E4DA;font:500 12px Inter,sans-serif;cursor:pointer}
+.row-btn:hover{border-color:#4FC3B5}
+.mini{width:30px;height:30px;border-radius:6px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;font:700 16px Inter,sans-serif;cursor:pointer}
+.mini:hover{background:#2C3140}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="width:1px;height:24px;background:#2C313D"></div>
+    <label for="cls" style="font-size:12px;color:#A3A7B3">Class</label>
+    <select id="cls" style="height:32px;background:#171A21;color:#E7E4DA;border:1px solid #3A4050;border-radius:6px;font:600 12px Inter,sans-serif;padding:0 8px">
+      <option>Warrior (you)</option><option>Paladin</option><option>Hunter</option><option>Rogue</option><option>Priest</option><option>Shaman</option><option>Mage</option><option>Warlock</option><option>Druid</option>
+    </select>
+    <div style="display:flex">
+      <button class="seg on" style="border-radius:6px 0 0 6px" aria-pressed="true">Scratch plan</button>
+      <button class="seg" style="border-left:none">Spec 1 · Arms (active)</button>
+      <button class="seg" style="border-left:none;border-radius:0 6px 6px 0">Spec 2 · Protection</button>
+    </div>
+    <div style="flex:1"></div>
+    <div style="font:500 11px 'JetBrains Mono',monospace;color:#8FD3A0;background:#16241B;border:1px solid #2E5A3B;border-radius:4px;padding:4px 8px">Data 1.60.1.70862 · matches client</div>
+    <button class="mini" aria-label="Close Build Atlas">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="planner" hint-size="176px,744px"></dc-import>
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+      <div style="flex:1;display:flex;min-height:0">
+        <div style="flex:1;display:flex;flex-direction:column;padding:16px 18px 12px;gap:12px;min-width:0">
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;flex:1">
+            <sc-for list="{{trees}}" as="tree" hint-placeholder-count="3">
+              <div style="background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <div style="font:700 15px Cinzel,serif;color:#F3E3B5">{{tree.name}}</div>
+                  <div style="font:500 13px 'JetBrains Mono',monospace;color:#E0B54A">{{tree.pts}} pts</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,48px);grid-template-rows:repeat(7,48px);column-gap:16px;row-gap:12px;justify-content:center">
+                  <sc-for list="{{tree.talents}}" as="t" hint-placeholder-count="9">
+                    <div style="{{t.cellStyle}}">
+                      <button class="{{t.cls}}" onClick="{{t.pick}}" aria-label="{{t.label}}">{{t.g}}<span class="badge">{{t.rankText}}</span></button>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div style="font:600 11px Inter,sans-serif;color:#A3A7B3;text-transform:uppercase;letter-spacing:.08em;margin-right:4px">Spells this build modifies</div>
+            <sc-for list="{{buildSpells}}" as="s" hint-placeholder-count="6">
+              <button class="chip" onClick="{{s.focus}}">{{s.spell}} <span style="margin-left:6px;color:#4FC3B5;font-family:'JetBrains Mono',monospace">×{{s.count}}</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="width:320px;flex:none;border-left:1px solid #2C313D;background:#111318;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;overflow:auto">
+          <sc-if value="{{spellMode}}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="font:600 11px Inter,sans-serif;color:#4FC3B5;text-transform:uppercase;letter-spacing:.08em">Spell view</div>
+              <div style="font:700 20px Cinzel,serif;color:#FFFFFF">{{spell}}</div>
+              <div style="font-size:13px;color:#A3A7B3;line-height:1.5">{{spellCount}} talents across all three trees change this spell. Teal rings mark them on the trees.</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <sc-for list="{{spellTalents}}" as="st" hint-placeholder-count="3">
+                  <button class="row-btn" onClick="{{st.pick}}"><span><span style="display:block;font-weight:600">{{st.name}}</span><span style="display:block;color:#A3A7B3;margin-top:2px">{{st.fx}}</span></span><span style="font-family:'JetBrains Mono',monospace;color:#E0B54A">{{st.rankText}}</span></button>
+                </sc-for>
+              </div>
+              <button class="btn" onClick="{{clearSpell}}">Back to talent</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{talentMode}}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <div style="font:600 11px Inter,sans-serif;color:#A3A7B3;text-transform:uppercase;letter-spacing:.08em">{{selTree}} · tier {{selTier}}</div>
+                <div style="font:700 20px Cinzel,serif;color:#FFFFFF;margin-top:4px">{{selName}}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <button class="mini" onClick="{{dec}}" aria-label="Remove a rank">−</button>
+                <div style="font:500 16px 'JetBrains Mono',monospace;color:#E0B54A;min-width:44px;text-align:center">{{selRank}}</div>
+                <button class="mini" onClick="{{inc}}" aria-label="Add a rank">+</button>
+                <div style="font-size:12px;color:#A3A7B3">{{selHint}}</div>
+              </div>
+              <div style="background:#181B22;border:1px solid #2C313D;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.5">
+                <div style="color:#E7E4DA">{{selCur}}</div>
+                <sc-if value="{{hasNext}}" hint-placeholder-val="{{ true }}"><div style="color:#8FD3A0;margin-top:6px">Next rank: {{selNext}}</div></sc-if>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="font:600 11px Inter,sans-serif;color:#A3A7B3;text-transform:uppercase;letter-spacing:.08em">Modifies</div>
+                <sc-for list="{{selMods}}" as="m" hint-placeholder-count="2">
+                  <button class="row-btn" onClick="{{m.focus}}"><span style="font-weight:600">{{m.spell}}</span><span style="color:#A3A7B3">{{m.fx}}</span></button>
+                </sc-for>
+                <sc-if value="{{noMods}}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#8C92A0">Passive stat talent — no spell is changed.</div></sc-if>
+              </div>
+              <sc-if value="{{hasStats}}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font:600 11px Inter,sans-serif;color:#A3A7B3;text-transform:uppercase;letter-spacing:.08em">Scales with</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{selStats}}" as="st" hint-placeholder-count="2"><span class="chip stat">{{st}}</span></sc-for></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{hasNote}}" hint-placeholder-val="{{ true }}">
+                <div style="background:#13231F;border:1px solid #2B5A52;border-radius:6px;padding:10px 12px;font-size:12px;line-height:1.5;color:#BFE9E2">{{selNote}}</div>
+              </sc-if>
+              <sc-if value="{{hasRelated}}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font:600 11px Inter,sans-serif;color:#A3A7B3;text-transform:uppercase;letter-spacing:.08em">Synergizes with (shared spells)</div>
+                  <sc-for list="{{related}}" as="r" hint-placeholder-count="3">
+                    <button class="row-btn" onClick="{{r.pick}}"><span><span style="display:block;font-weight:600">{{r.name}}</span><span style="display:block;color:#A3A7B3;margin-top:2px">via {{r.via}}</span></span><span style="font-size:11px;color:{{r.ownColor}}">{{r.owned}}</span></button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <div style="height:60px;flex:none;border-top:1px solid #2C313D;background:#101217;display:flex;align-items:center;gap:12px;padding:0 16px">
+        <div style="font:500 14px 'JetBrains Mono',monospace;color:#E7E4DA">{{split}}</div>
+        <div style="font:500 13px Inter,sans-serif;color:#A3A7B3">{{totalText}}</div>
+        <div style="font-size:12px;color:#F0A070">Differs from Spec 1 by 8 points</div>
+        <div style="flex:1"></div>
+        <button class="btn" onClick="{{reset}}">Reset plan</button>
+        <a class="btn" href="Compare.dc.html" style="display:inline-flex;align-items:center;text-decoration:none;color:#E7E4DA">Compare…</a>
+        <a class="btn" href="Share.dc.html" style="display:inline-flex;align-items:center;text-decoration:none;color:#E7E4DA">Share…</a>
+        <a class="btn btn-primary" href="Apply.dc.html" style="display:inline-flex;align-items:center;text-decoration:none;color:#16130A">Apply to Spec 1</a>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var TREES = ['Arms', 'Fury', 'Protection'];
+var TALENTS = [
+  {id:'ihs',name:'Improved Heroic Strike',g:'IH',tree:0,row:0,col:0,max:3,r:3,desc:'Reduces the rage cost of Heroic Strike by {v}.',vals:['1','2','3'],mods:[{spell:'Heroic Strike',fx:'−1 rage per rank'}],stat:['Strength']},
+  {id:'defl',name:'Deflection',g:'Df',tree:0,row:0,col:1,max:5,r:5,desc:'Increases your chance to parry by {v}.',vals:['1%','2%','3%','4%','5%'],mods:[],stat:['Parry']},
+  {id:'irend',name:'Improved Rend',g:'IR',tree:0,row:0,col:2,max:3,r:3,desc:'Increases the bleed damage of Rend by {v}.',vals:['25%','50%','75%'],mods:[{spell:'Rend',fx:'+25% damage per rank'}],stat:['Attack Power']},
+  {id:'tact',name:'Tactical Mastery',g:'TM',tree:0,row:1,col:1,max:5,r:5,desc:'You keep up to {v} rage when you change stance.',vals:['5','10','15','20','25'],mods:[{spell:'Overpower',fx:'rage kept on stance swap'},{spell:'Mortal Strike',fx:'rage kept on stance swap'}],stat:[],note:'Resource loop: stance-dance into Overpower without throwing away the rage you need for Mortal Strike.'},
+  {id:'iop',name:'Improved Overpower',g:'IO',tree:0,row:1,col:2,max:2,r:2,desc:'Increases the critical strike chance of Overpower by {v}.',vals:['25%','50%'],mods:[{spell:'Overpower',fx:'+25% crit per rank'}],stat:['Crit']},
+  {id:'anger',name:'Anger Management',g:'AM',tree:0,row:2,col:0,max:1,r:1,desc:'Generates 1 rage every 3 sec.',vals:[],mods:[{spell:'Heroic Strike',fx:'extra rage to spend'},{spell:'Mortal Strike',fx:'extra rage to spend'}],stat:[],note:'Generator: steady rage feeds every spender in the build.'},
+  {id:'dw',name:'Deep Wounds',g:'DW',tree:0,row:2,col:1,max:3,r:3,desc:'Your critical strikes make the target bleed for {v} of your average weapon damage over 12 sec.',vals:['20%','40%','60%'],mods:[{spell:'Deep Wounds',fx:'procs from melee crits'},{spell:'Mortal Strike',fx:'crit → Deep Wounds'},{spell:'Overpower',fx:'crit → Deep Wounds'}],stat:['Crit','Weapon damage'],note:'Proc chain: any melee crit → Deep Wounds bleed. Stronger with Impale, Cruelty and Improved Overpower.'},
+  {id:'impale',name:'Impale',g:'Im',tree:0,row:3,col:1,max:2,r:2,desc:'Increases the critical strike damage bonus of your abilities by {v}.',vals:['10%','20%'],mods:[{spell:'Mortal Strike',fx:'+10% crit damage per rank'},{spell:'Overpower',fx:'+10% crit damage per rank'},{spell:'Heroic Strike',fx:'+10% crit damage per rank'}],stat:['Crit']},
+  {id:'twohand',name:'Two-Handed Weapon Spec.',g:'2H',tree:0,row:3,col:2,max:5,r:5,desc:'Increases damage with two-handed weapons by {v}.',vals:['1%','2%','3%','4%','5%'],mods:[{spell:'Mortal Strike',fx:'+1% damage per rank'},{spell:'Overpower',fx:'+1% damage per rank'},{spell:'Auto attack',fx:'+1% damage per rank'}],stat:['Weapon damage']},
+  {id:'sweep',name:'Sweeping Strikes',g:'SS',tree:0,row:4,col:1,max:1,r:1,desc:'Your next 5 melee attacks strike an extra nearby target.',vals:[],mods:[{spell:'Whirlwind',fx:'hits cleave'},{spell:'Mortal Strike',fx:'hits cleave'}],stat:[]},
+  {id:'ms',name:'Mortal Strike',g:'MS',tree:0,row:6,col:1,max:1,r:1,desc:'Instant strike for weapon damage plus 160 that cuts healing on the target by 50%.',vals:[],mods:[{spell:'Mortal Strike',fx:'grants the ability'}],stat:['Weapon damage','Attack Power']},
+  {id:'boom',name:'Booming Voice',g:'BV',tree:1,row:0,col:1,max:5,r:0,desc:'Increases the duration of your shouts by {v}.',vals:['10%','20%','30%','40%','50%'],mods:[{spell:'Battle Shout',fx:'+10% duration per rank'}],stat:[]},
+  {id:'cruelty',name:'Cruelty',g:'Cr',tree:1,row:0,col:2,max:5,r:5,desc:'Increases your chance to critically hit with melee weapons by {v}.',vals:['1%','2%','3%','4%','5%'],mods:[{spell:'Mortal Strike',fx:'+1% crit per rank'},{spell:'Overpower',fx:'+1% crit per rank'},{spell:'Auto attack',fx:'+1% crit per rank'},{spell:'Deep Wounds',fx:'more crits → more procs'}],stat:['Crit']},
+  {id:'uw',name:'Unbridled Wrath',g:'UW',tree:1,row:1,col:1,max:5,r:5,desc:'Your melee hits have a {v} chance to generate 1 rage.',vals:['8%','16%','24%','32%','40%'],mods:[{spell:'Auto attack',fx:'rage on hit'},{spell:'Heroic Strike',fx:'more rage to spend'}],stat:['Hit','Attack speed'],note:'Generator that scales with swing count: a slow two-hander gets less from it than dual wield.'},
+  {id:'ibs',name:'Improved Battle Shout',g:'IB',tree:1,row:2,col:1,max:5,r:5,desc:'Increases the attack power bonus of Battle Shout by {v}.',vals:['5%','10%','15%','20%','25%'],mods:[{spell:'Battle Shout',fx:'+5% AP per rank'}],stat:['Attack Power']},
+  {id:'dws',name:'Dual Wield Spec.',g:'DS',tree:1,row:3,col:0,max:5,r:0,desc:'Increases off-hand damage by {v}.',vals:['5%','10%','15%','20%','25%'],mods:[{spell:'Auto attack',fx:'+5% off-hand per rank'}],stat:['Weapon damage']},
+  {id:'enrage',name:'Enrage',g:'En',tree:1,row:3,col:2,max:5,r:0,desc:'After being critically hit, your melee damage rises by {v} for 12 sec.',vals:['5%','10%','15%','20%','25%'],mods:[{spell:'Auto attack',fx:'+5% damage per rank'},{spell:'Mortal Strike',fx:'+5% damage per rank'}],stat:[]},
+  {id:'dwish',name:'Death Wish',g:'DW',tree:1,row:4,col:1,max:1,r:0,desc:'Increases physical damage by 20% for 30 sec.',vals:[],mods:[{spell:'Mortal Strike',fx:'+20% damage'},{spell:'Bloodthirst',fx:'+20% damage'},{spell:'Auto attack',fx:'+20% damage'}],stat:[]},
+  {id:'flurry',name:'Flurry',g:'Fl',tree:1,row:5,col:2,max:5,r:0,desc:'After a critical strike, your next 3 swings are {v} faster.',vals:['10%','15%','20%','25%','30%'],mods:[{spell:'Auto attack',fx:'faster swings after a crit'}],stat:['Crit','Attack speed'],note:'Proc chain: crit → Flurry → more swings → more Unbridled Wrath rage.'},
+  {id:'bt',name:'Bloodthirst',g:'BT',tree:1,row:6,col:1,max:1,r:0,desc:'Instant attack for damage based on attack power that heals you.',vals:[],mods:[{spell:'Bloodthirst',fx:'grants the ability'}],stat:['Attack Power']},
+  {id:'sspec',name:'Shield Specialization',g:'SS',tree:2,row:0,col:1,max:5,r:0,desc:'Increases block chance by {v}; blocks can generate rage.',vals:['1%','2%','3%','4%','5%'],mods:[{spell:'Shield Block',fx:'+1% block per rank'},{spell:'Revenge',fx:'blocks enable Revenge'}],stat:['Block']},
+  {id:'antic',name:'Anticipation',g:'An',tree:2,row:0,col:2,max:5,r:0,desc:'Increases defense skill by {v}.',vals:['2','4','6','8','10'],mods:[],stat:['Defense']},
+  {id:'tough',name:'Toughness',g:'To',tree:2,row:1,col:2,max:5,r:0,desc:'Increases armor from items by {v}.',vals:['2%','4%','6%','8%','10%'],mods:[],stat:['Armor']},
+  {id:'last',name:'Last Stand',g:'LS',tree:2,row:2,col:0,max:1,r:0,desc:'Temporarily grants 30% of maximum health.',vals:[],mods:[],stat:['Stamina']},
+  {id:'isb',name:'Improved Shield Block',g:'IS',tree:2,row:2,col:1,max:3,r:0,desc:'Shield Block blocks {v} extra attacks and lasts longer.',vals:['1','1','1'],mods:[{spell:'Shield Block',fx:'+1 charge, longer duration'}],stat:['Block']},
+  {id:'defi',name:'Defiance',g:'De',tree:2,row:2,col:3,max:5,r:0,desc:'Increases threat generated in Defensive Stance by {v}.',vals:['3%','6%','9%','12%','15%'],mods:[{spell:'Sunder Armor',fx:'+3% threat per rank'},{spell:'Revenge',fx:'+3% threat per rank'}],stat:[]},
+  {id:'ohs',name:'One-Handed Weapon Spec.',g:'1H',tree:2,row:4,col:2,max:5,r:0,desc:'Increases damage with one-handed weapons by {v}.',vals:['2%','4%','6%','8%','10%'],mods:[{spell:'Shield Slam',fx:'+2% damage per rank'},{spell:'Revenge',fx:'+2% damage per rank'},{spell:'Auto attack',fx:'+2% damage per rank'}],stat:['Weapon damage']},
+  {id:'slam',name:'Shield Slam',g:'SL',tree:2,row:6,col:1,max:1,r:0,desc:'Slams the target with your shield and dispels one magic effect.',vals:[],mods:[{spell:'Shield Slam',fx:'grants the ability'}],stat:['Block value']}
+];
+var DEFAULT = {};
+TALENTS.forEach(function (t) { DEFAULT[t.id] = t.r; });
+
+class Component extends DCLogic {
+  fill(t, rank) {
+    if (!t.vals.length) return t.desc;
+    return t.desc.replace('{v}', t.vals[Math.max(0, rank - 1)]);
+  }
+  renderVals() {
+    var self = this;
+    var s = this.state || {};
+    var ranks = s.ranks || DEFAULT;
+    var sel = s.sel || 'dw';
+    var spell = s.spell || null;
+    var pts = [0, 0, 0];
+    TALENTS.forEach(function (t) { pts[t.tree] += ranks[t.id]; });
+    var total = pts[0] + pts[1] + pts[2];
+    var selT = TALENTS.find(function (t) { return t.id === sel; });
+    var selSpells = selT.mods.map(function (m) { return m.spell; });
+    var set = function (patch) { self.setState(patch); };
+    var trees = TREES.map(function (name, i) {
+      return {
+        name: name, pts: pts[i],
+        talents: TALENTS.filter(function (t) { return t.tree === i; }).map(function (t) {
+          var r = ranks[t.id];
+          var cls = 'node';
+          if (r > 0) cls += (r === t.max ? ' max' : ' has');
+          if (r === 0 && pts[i] < t.row * 5) cls += ' locked';
+          var touches = spell ? t.mods.some(function (m) { return m.spell === spell; })
+            : (t.id !== sel && t.mods.some(function (m) { return selSpells.indexOf(m.spell) >= 0; }));
+          if (touches) cls += ' rel';
+          if (!spell && t.id === sel) cls += ' sel';
+          return { g: t.g, cls: cls, rankText: r + '/' + t.max, label: t.name + ', rank ' + r + ' of ' + t.max,
+            cellStyle: 'grid-row:' + (t.row + 1) + ';grid-column:' + (t.col + 1),
+            pick: function () { set({ sel: t.id, spell: null }); } };
+        })
+      };
+    });
+    var counts = {};
+    TALENTS.forEach(function (t) { if (ranks[t.id] > 0) t.mods.forEach(function (m) { counts[m.spell] = (counts[m.spell] || 0) + 1; }); });
+    var buildSpells = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).map(function (k) {
+      return { spell: k, count: counts[k], focus: function () { set({ spell: k }); } };
+    });
+    var r = ranks[selT.id];
+    var tierNeed = selT.row * 5;
+    var canInc = r < selT.max && total < 51 && pts[selT.tree] >= tierNeed;
+    var hint = r === selT.max ? 'Maxed' : (pts[selT.tree] < tierNeed ? 'Needs ' + tierNeed + ' pts in ' + TREES[selT.tree] : (total >= 51 ? 'No points left' : ''));
+    var related = TALENTS.filter(function (o) { return o.id !== sel && o.mods.some(function (m) { return selSpells.indexOf(m.spell) >= 0; }); }).map(function (o) {
+      var via = o.mods.filter(function (m) { return selSpells.indexOf(m.spell) >= 0; }).map(function (m) { return m.spell; });
+      var owned = ranks[o.id] > 0;
+      return { name: o.name, via: via.filter(function (v, i) { return via.indexOf(v) === i; }).join(', '), owned: owned ? 'In build' : 'Not taken', ownColor: owned ? '#8FD3A0' : '#F0A070', pick: function () { set({ sel: o.id, spell: null }); } };
+    });
+    var spellTalents = spell ? TALENTS.filter(function (t) { return t.mods.some(function (m) { return m.spell === spell; }); }).map(function (t) {
+      return { name: t.name, fx: t.mods.find(function (m) { return m.spell === spell; }).fx, rankText: ranks[t.id] + '/' + t.max, pick: function () { set({ sel: t.id, spell: null }); } };
+    }) : [];
+    var change = function (d) {
+      var nr = Object.assign({}, ranks);
+      nr[selT.id] = Math.max(0, Math.min(selT.max, r + d));
+      set({ ranks: nr });
+    };
+    return {
+      trees: trees, buildSpells: buildSpells,
+      spellMode: !!spell, talentMode: !spell, spell: spell, spellCount: spellTalents.length, spellTalents: spellTalents,
+      clearSpell: function () { set({ spell: null }); },
+      selName: selT.name, selTree: TREES[selT.tree], selTier: selT.row + 1, selRank: r + '/' + selT.max, selHint: hint,
+      selCur: r > 0 ? this.fill(selT, r) : 'Not learned. ' + this.fill(selT, 1),
+      hasNext: r > 0 && r < selT.max, selNext: r < selT.max ? (selT.vals[r] || '') : '',
+      selMods: selT.mods.map(function (m) { return { spell: m.spell, fx: m.fx, focus: function () { set({ spell: m.spell }); } }; }),
+      noMods: selT.mods.length === 0,
+      hasStats: selT.stat.length > 0, selStats: selT.stat,
+      hasNote: !!selT.note, selNote: selT.note || '',
+      hasRelated: related.length > 0, related: related,
+      inc: function () { if (canInc) change(1); }, dec: function () { change(-1); },
+      reset: function () { set({ ranks: DEFAULT, spell: null }); },
+      split: pts[0] + ' / ' + pts[1] + ' / ' + pts[2],
+      totalText: total + ' of 51 points spent'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Atlas – Dummy benchmark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0D11}
+.btn{font:600 13px Inter,sans-serif;border-radius:6px;padding:0 14px;height:36px;border:1px solid #3A4050;background:#232733;color:#E7E4DA;cursor:pointer}
+.btn-primary{background:#E0B54A;color:#16130A;border-color:#E0B54A}
+.seg{font:600 12px Inter,sans-serif;height:32px;padding:0 12px;border:1px solid #3A4050;background:#171A21;color:#A3A7B3;cursor:pointer;margin-left:-1px}
+.seg.on{background:#2A2416;color:#F3E3B5;border-color:#7A6327;position:relative}
+.h{font:600 11px Inter,sans-serif;color:#8C92A0;text-transform:uppercase;letter-spacing:.1em}
+.panel{background:#181B22;border:1px solid #2C313D;border-radius:8px;padding:14px 16px}
+.num{font:500 13px 'JetBrains Mono',monospace;text-align:right}
+</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;background:#14161B;border:1px solid #3A3F4C;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:Inter,sans-serif;color:#E7E4DA">
+  <div style="height:56px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px 0 20px;background:#101217;border-bottom:1px solid #2C313D">
+    <div style="font:700 18px Cinzel,serif;color:#E0B54A;letter-spacing:.04em">Build Atlas</div>
+    <div style="font-size:13px;color:#A3A7B3">Dummy benchmark</div>
+    <div style="flex:1"></div>
+    <button class="btn" aria-label="Close Build Atlas" style="width:36px;padding:0">×</button>
+  </div>
+  <div style="flex:1;display:flex;min-height:0">
+    <dc-import name="NavRail" active="bench" hint-size="176px,744px"></dc-import>
+    <div style="flex:1;display:flex;flex-direction:column;padding:16px 20px;gap:14px;min-width:0">
+      <div class="panel" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+        <div class="h">New run</div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:#A3A7B3">Length</span>
+          <div style="display:flex"><sc-for list="{{lens}}" as="l" hint-placeholder-count="4"><button class="{{l.cls}}" onClick="{{l.pick}}">{{l.label}}</button></sc-for></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px"><label for="tag" style="font-size:12px;color:#A3A7B3">Tag run as</label>
+          <select id="tag" style="height:32px;background:#171A21;color:#E7E4DA;border:1px solid #3A4050;border-radius:6px;font:600 12px Inter,sans-serif;padding:0 8px"><option>Spec 1 · Arms 31/20/0</option><option>Spec 2 · Arms 31/5/15</option></select>
+        </div>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary">Arm: starts on first hit</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:14px;flex:1;min-height:0">
+        <div class="panel" style="display:flex;flex-direction:column;gap:14px">
+          <div class="h">Result · {{lenLabel}} runs, same gear</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#6AA8FF;font-weight:600">Spec 1 · Arms 31/20/0</span><span class="num">{{a}} DPS avg</span></div>
+            <div style="height:16px;background:#22262F;border-radius:4px"><div style="{{aBar}}"></div></div>
+            <div style="font-size:11px;color:#8C92A0">4 runs · range {{aRange}}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#F0A070;font-weight:600">Spec 2 · Arms 31/5/15</span><span class="num">{{b}} DPS avg</span></div>
+            <div style="height:16px;background:#22262F;border-radius:4px"><div style="{{bBar}}"></div></div>
+            <div style="font-size:11px;color:#8C92A0">3 runs · range {{bRange}}</div>
+          </div>
+          <div style="background:#13231F;border:1px solid #2B5A52;border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.5;color:#BFE9E2">Spec 1 is about {{diff}} ahead. The ranges overlap a little, so do 2 more runs on Spec 2 to be sure.</div>
+          <div style="font-size:12px;color:#8C92A0;line-height:1.5">Numbers come from the game's damage meter after each run ends. Nothing shows live during the run — Forever hides combat values from addons.</div>
+        </div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:6px">
+          <div class="h" style="margin-bottom:4px">Run history</div>
+          <div style="display:grid;grid-template-columns:30px 1fr 60px 70px 28px;gap:8px;font-size:11px;color:#8C92A0;padding-bottom:4px;border-bottom:1px solid #2C313D"><span>#</span><span>Build</span><span style="text-align:right">Length</span><span style="text-align:right">DPS</span><span></span></div>
+          <sc-for list="{{runs}}" as="r" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:30px 1fr 60px 70px 28px;gap:8px;align-items:center;font-size:13px;padding:4px 0;border-bottom:1px solid #22262F">
+              <span style="color:#8C92A0">{{r.i}}</span><span style="{{r.c}}">{{r.b}}</span><span class="num">{{r.len}}</span><span class="num">{{r.dps}}</span>
+              <button class="btn" style="height:24px;width:24px;padding:0;font-size:12px" aria-label="Delete run {{r.i}}">×</button>
+            </div>
+          </sc-for>
+          <div style="font-size:12px;color:#F0A070;margin-top:6px">Run 2 had different gear — left out of the average.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+var LENS = ['1 min', '2 min', '3 min', '5 min'];
+var RUNS = [[1, 'Spec 1', 312], [2, 'Spec 1', 298], [3, 'Spec 2', 281], [4, 'Spec 1', 309], [5, 'Spec 2', 276], [6, 'Spec 1', 315], [7, 'Spec 2', 289]];
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var L = (this.state && this.state.L) || 2;
+    var k = [0.96, 0.99, 1, 1.01][L];
+    var a = Math.round(311 * k), b = Math.round(282 * k);
+    var bar = function (v, c) { return 'height:16px;border-radius:4px;background:' + c + ';width:' + Math.round(v / 340 * 100) + '%'; };
+    return {
+      lens: LENS.map(function (l, i) { return { label: l, cls: 'seg' + (i === L ? ' on' : ''), pick: function () { self.setState({ L: i }); } }; }),
+      lenLabel: LENS[L], a: a, b: b, aBar: bar(a, '#6AA8FF'), bBar: bar(b, '#F0A070'),
+      aRange: Math.round(298 * k) + '–' + Math.round(315 * k), bRange: Math.round(276 * k) + '–' + Math.round(289 * k),
+      diff: Math.round((a - b) / b * 100) + '%',
+      runs: RUNS.slice().reverse().map(function (r) { return { i: r[0], b: r[1], c: r[1] === 'Spec 1' ? 'color:#6AA8FF' : 'color:#F0A070', len: LENS[L], dps: Math.round(r[2] * k) }; })
+    };
+  }
+}
+</script>
+</body>
+</html>
