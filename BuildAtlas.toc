@@ -20,6 +20,8 @@ Data\TalentData.lua
 Model\Plan.lua
 Model\SynergyGraph.lua
 Model\Talents.lua
+Model\Codecs\Loadout.lua
+Model\Codecs\Share.lua
 
 Core\Probe.lua
 
@@ -28,5 +30,7 @@ UI\Toasts.lua
 UI\Window.lua
 UI\TooltipHooks.lua
 UI\Planner.lua
+UI\Share.lua
+UI\ApplyDialog.lua
 UI\Launcher.lua
 UI\Settings.lua

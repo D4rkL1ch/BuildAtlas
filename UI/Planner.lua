@@ -582,11 +582,13 @@ local function renderFooter(total, perGroup)
 		pane.fromSpec:SetEnabledState(not InCombatLockdown())
 		pane.fromSpec:Show()
 		pane.apply:SetLabel((L["Apply to Spec %d"]):format(target))
+		pane.apply:SetEnabledState(not InCombatLockdown())
 		pane.apply:FitWidth()
 	else
 		pane.diff:SetText("")
 		pane.fromSpec:Hide()
 		pane.apply:SetLabel(L["Apply"])
+		pane.apply:SetEnabledState(false)
 		pane.apply:FitWidth()
 	end
 	pane.reset:SetEnabledState(not InCombatLockdown())
@@ -766,16 +768,14 @@ local function buildFooter(f)
 
 	pane.apply = UI.Button(footer, L["Apply to Spec 1"], "primary")
 	pane.apply:SetPoint("RIGHT", -16, 0)
-	pane.apply:SetEnabledState(false)
-	UI.AttachTooltip(pane.apply, L["Apply"], { L["Learning the planned talents comes in milestone M3. Planning never changes your real talents."] })
+	pane.apply:SetScript("OnClick", function() ns.ApplyDialog.Open() end)
+	UI.AttachTooltip(pane.apply, L["Apply"], { L["Learn the planned points on your character. Only adds points; never removes any."] })
 	pane.share = UI.Button(footer, L["Share…"], "default")
 	pane.share:SetPoint("RIGHT", pane.apply, "LEFT", -10, 0)
-	pane.share:SetEnabledState(false)
-	UI.AttachTooltip(pane.share, L["Share"], { L["Import and export come in milestone M3."] })
+	pane.share:SetScript("OnClick", function() ns.Window.Show("share") end)
 	pane.compare = UI.Button(footer, L["Compare…"], "default")
 	pane.compare:SetPoint("RIGHT", pane.share, "LEFT", -10, 0)
-	pane.compare:SetEnabledState(false)
-	UI.AttachTooltip(pane.compare, L["Compare"], { L["Build comparison comes in milestone M4."] })
+	pane.compare:SetScript("OnClick", function() ns.Window.Show("compare") end)
 	pane.fromSpec = UI.Button(footer, L["Load Spec 1"], "default")
 	pane.fromSpec:SetPoint("RIGHT", pane.compare, "LEFT", -10, 0)
 	pane.fromSpec:SetScript("OnClick", Planner.LoadFromSpec)
@@ -896,6 +896,49 @@ ns:RegisterMessage("BA_SPELL_DATA", function()
 		Planner.Render()
 	end)
 end)
+
+-- Public view of the plan on screen, for Share, Apply and Compare:
+-- { classID, slot, tree, ranks, label }, or nil when no tree is loaded.
+function Planner.Current()
+	if not tree then
+		state.classID = state.classID or Talents.PlayerClassID()
+		local t = Talents.ReadTree(state.classID)
+		if not t then return nil end
+		tree = t
+		graph = SynergyGraph.New(tree, ns.ClassData and ns.ClassData[state.classID])
+		specRanks = {}
+		if tree.isPlayerClass then
+			for g = 1, Talents.GetNumSpecGroups() do
+				specRanks[g] = Talents.ReadRanks(tree, Talents.GetSpecConfigID(g))
+			end
+		end
+		ranks = loadPlan()
+	end
+	local _, perGroup = Plan.Spent(tree, ranks)
+	local split = {}
+	for i = 1, #tree.groups do split[i] = tostring(perGroup[i] or 0) end
+	local slotName = state.slot == "scratch" and L["Scratch plan"] or (L["Spec %d"]):format(specGroupOfSlot(state.slot))
+	return {
+		classID = state.classID, slot = state.slot, tree = tree, ranks = ranks, graph = graph,
+		specGroup = specGroupOfSlot(state.slot), specRanks = specRanks,
+		label = ("%s · %s (%s %s)"):format(className(state.classID), slotName, leaningTree(ranks) or "", table.concat(split, "/")),
+	}
+end
+
+-- Replace a slot's plan (default scratch) of a class with `newRanks` and show it.
+function Planner.LoadInto(classID, newRanks, slot)
+	state.classID = classID
+	state.slot = slot or "scratch"
+	state.selected, state.spell = nil, nil
+	local t = Talents.ReadTree(classID)
+	if not t then return false end
+	local store = planStore(classID)
+	store[state.slot] = { treeID = t.treeID, ranks = Plan.Clean(t, newRanks) }
+	if pane then Planner.Refresh() end
+	return true
+end
+
+Planner.ClassName = className
 
 -- For tests and debugging.
 function Planner._State()

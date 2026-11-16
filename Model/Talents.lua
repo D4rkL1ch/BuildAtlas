@@ -188,7 +188,9 @@ function Talents.ReadTree(classID)
 	for i, g in ipairs(groups) do groupIndex[g.groupID] = i end
 
 	local talents, nodes, liveRanks = {}, {}, {}
-	for _, nodeID in ipairs(Read(nil, C_Traits.GetTreeNodes, treeID) or {}) do
+	-- Every node of the tree in API order: the loadout string format walks it.
+	local nodeOrder = Read(nil, C_Traits.GetTreeNodes, treeID) or {}
+	for _, nodeID in ipairs(nodeOrder) do
 		local info = Read(nil, C_Traits.GetNodeInfo, configID, nodeID)
 		if info and info.ID and info.ID ~= 0 and not info.subTreeID then
 			local group
@@ -233,6 +235,7 @@ function Talents.ReadTree(classID)
 
 	local tree = {
 		classID = classID, treeID = treeID, groups = groups, talents = talents,
+		nodeOrder = nodeOrder, specID = ns.ClassByID[classID] and ns.ClassByID[classID].specID,
 		rows = rows, cols = math.max(cols, 4), maxPoints = ns.MAX_TALENT_POINTS,
 		-- Ranks of the config used to read: the active spec for the player's class.
 		readRanks = liveRanks,

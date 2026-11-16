@@ -9,7 +9,7 @@ local repoRoot = assert(arg and arg[1], "usage: run.lua <repoRoot>")
 local testDir = repoRoot .. "/tools/tests/"
 local stubs = dofile(testDir .. "wowstubs.lua")
 
-local T = { stubs = stubs }
+local T = { stubs = stubs, root = repoRoot }
 local failures, passed = 0, 0
 
 function T.test(name, fn)
@@ -73,7 +73,7 @@ function T.boot(savedVars, charVars)
 	return ns
 end
 
-for _, file in ipairs({ "test_plan.lua", "test_synergy.lua", "test_talents.lua", "test_probe.lua", "test_ui.lua", "test_data.lua", "test_m2.lua" }) do
+for _, file in ipairs({ "test_plan.lua", "test_synergy.lua", "test_talents.lua", "test_probe.lua", "test_ui.lua", "test_data.lua", "test_m2.lua", "test_codecs.lua", "test_m3.lua" }) do
 	assert(loadfile(testDir .. file))(T)
 end
 

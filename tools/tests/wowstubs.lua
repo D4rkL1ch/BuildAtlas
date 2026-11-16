@@ -18,7 +18,8 @@ for _, name in ipairs({
 	"SetFont", "SetTextColor", "SetBackdrop", "SetBackdropColor", "SetBackdropBorderColor",
 	"SetDesaturated", "SetThickness", "SetStartPoint", "SetEndPoint", "SetFrameLevel",
 	"AddLine", "AddDoubleLine", "SetOwner", "GenerateMenu", "SetShadowColor", "SetShadowOffset",
-	"ClearLines", "SetHighlightTexture", "SetFrameStrata",
+	"ClearLines", "SetHighlightTexture", "SetFrameStrata", "SetMultiLine", "SetAutoFocus",
+	"SetScrollChild", "SetCursorPosition", "HighlightText", "SetFocus", "ClearFocus",
 }) do W[name] = noop end
 
 local function newWidget(kind, parent)
@@ -204,13 +205,23 @@ local function installTraits()
 			return n and (n.name .. " rank " .. rank .. " text") or ""
 		end,
 		GetConfigInfo = function(configID) return { ID = configID, type = 4, name = "Camelot", treeIDs = { M.TREE_ID } } end,
-		GetTreeCurrencyInfo = function() return { { traitCurrencyID = 3820, quantity = 10, maxQuantity = 51, spent = 41 } } end,
+		GetTreeCurrencyInfo = function() return { { traitCurrencyID = 3820, quantity = M.unspent, maxQuantity = 51, spent = 5 } } end,
 		GetTreeInfo = function() return { ID = M.TREE_ID, gates = {} } end,
 		GetGroupCurrencyInfo = function() return {} end,
 		GetNodeCost = function() return { { ID = 3820, amount = 1 } } end,
 		GenerateImportString = function() return "BAAAAAAAexample" end,
 		GetLoadoutSerializationVersion = function() return 2 end,
 		GetTreeHash = function() return { 1, 2, 3 } end,
+		ConfigHasStagedChanges = function() return M.staged end,
+		PurchaseRank = function(configID, nodeID)
+			if M.refusePurchase then return false end
+			M.ranks[configID] = M.ranks[configID] or {}
+			M.ranks[configID][nodeID] = (M.ranks[configID][nodeID] or 0) + 1
+			M.purchased[#M.purchased + 1] = nodeID
+			return true
+		end,
+		CommitConfig = function(configID) M.committed = configID return not M.refuseCommit end,
+		RollbackConfig = function(configID) M.rolledBack = configID return true end,
 	}
 	C_ClassTalents = {
 		GetActiveConfigID = function() return M.activeConfig end,
@@ -248,6 +259,15 @@ function M.reset()
 	M.ranks = { [7001] = { [101] = 3, [102] = 2 }, [7002] = { [301] = 5 } }
 	M.otherTrees, M.otherTreeBySpec = {}, {}
 	M.viewLoadout = nil
+	M.staged, M.refusePurchase, M.refuseCommit, M.committed, M.rolledBack = false, false, false, nil, nil
+	M.purchased = {}
+	M.unspent = 20
+	M.sentAddon = {}
+	M.instance, M.raid = false, false
+	C_ChatInfo = {
+		RegisterAddonMessagePrefix = function() return true end,
+		SendAddonMessage = function(prefix, text, chatType, target) table.insert(M.sentAddon, { prefix, text, chatType, target }) return true end,
+	}
 	M.timers = {}
 	M.ctrl = false
 	M.tooltipPostCalls = {}
@@ -340,6 +360,11 @@ C_Timer = { After = function(_, fn) table.insert(M.timers, fn) end }
 
 function GetBuildInfo() return "1.60.1", "70862", "Nov 10 2026", 16001 end
 function InCombatLockdown() return M.combat end
+function IsInInstance() return M.instance, M.instance and "party" or "none" end
+function IsInRaid() return M.raid end
+function UnitRace() return "Human", "Human" end
+function UnitName() return "Tester" end
+function GetTime() return M.now or 0 end
 function IsShiftKeyDown() return M.shift end
 function UnitClass() return "Warrior", "WARRIOR", M.classID end
 function UnitLevel() return 60 end

@@ -220,3 +220,44 @@ function UI.Pool(parent, create)
 	end
 	return pool
 end
+
+-- Multi-line text box in a dark panel. readOnly boxes restore their text when
+-- typed into, so Ctrl+A / Ctrl+C still work. Returns the panel; panel.Edit is
+-- the EditBox.
+function UI.TextArea(parent, width, height, readOnly)
+	local panel = UI.Panel(parent, "0E1014", "borderHi")
+	panel:SetSize(width, height)
+	local scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	scroll:SetPoint("TOPLEFT", 8, -8)
+	scroll:SetPoint("BOTTOMRIGHT", -28, 8)
+	local edit = CreateFrame("EditBox", nil, scroll)
+	edit:SetMultiLine(true)
+	edit:SetAutoFocus(false)
+	edit:SetWidth(width - 40)
+	edit:SetFont(UI.fonts.body, math.floor(12 * UI.FONT_SCALE + 0.5), "")
+	edit:SetTextColor(UI.RGB(UI.colors.text))
+	edit:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
+	scroll:SetScrollChild(edit)
+	panel:EnableMouse(true)
+	panel:SetScript("OnMouseDown", function() edit:SetFocus() end)
+	panel.Edit = edit
+	panel.Scroll = scroll
+	if readOnly then
+		edit:SetScript("OnTextChanged", function(self, userInput)
+			if userInput and panel.value then self:SetText(panel.value) self:HighlightText() end
+		end)
+	end
+	function panel:SetValue(text)
+		self.value = text
+		edit:SetText(text)
+		edit:SetCursorPosition(0)
+	end
+	function panel:GetValue()
+		return edit:GetText()
+	end
+	function panel:SelectAll()
+		edit:SetFocus()
+		edit:HighlightText()
+	end
+	return panel
+end
