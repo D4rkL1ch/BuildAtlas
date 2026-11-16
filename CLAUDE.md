@@ -3,7 +3,7 @@
 WoW Forever addon (client 1.60.x, `## Interface: 16001`, modern Mainline-style API, Lua 5.1). The full brief is `HANDOFF.md`; window designs are `design/*.dc.html`. Read the relevant parts before any work.
 
 ## How to work
-- Build one milestone (HANDOFF.md §6) at a time. Don't start the next until the user confirms the current one works in-game.
+- Milestones M0-M6 (HANDOFF.md §6) are built; work now follows in-game feedback. Keep changes small and tested; list what needs in-game confirmation.
 - At the end of a step, list exactly what the user should test in-game (`/reload` or restart, what to click, expected result).
 - Platform facts come from the probe (`/batlas probe`, results in `docs/probe-results.md`) or Blizzard's Forever UI source. Don't build on an unverified fact without a guarded fallback; record open questions in `docs/probe-results.md`.
 - Project skills in `.claude/skills/`: `deploy-and-check` before the user tests in-game, `forever-api-check` before using an API not yet in the addon, `read-saved-data` to read probe results and saved plans.
@@ -16,11 +16,15 @@ WoW Forever addon (client 1.60.x, `## Interface: 16001`, modern Mainline-style A
 - Every combat-time read goes through `ns.Secrets` (`issecretvalue` guard, `pcall`, fallback). Nothing secret may reach SavedVariables (`Secrets.Sanitize`).
 - Plans are read-only in combat; nothing calls protected functions in combat. Applying talents (M3) only adds ranks, never refunds.
 - Strings through `ns.L[...]` (enUS keys for now).
-- Generated data (`Data/Data_<build>.lua`, M1) is never hand-edited; change `tools/build_data.py` or `tools/overrides/` instead.
+- Generated data (`Data/TalentData.lua`, `Data/Presets.lua`) is never hand-edited; change `tools/build_data.py`, `tools/overrides/<CLASS>.json` or `tools/presets.json` and rebuild (`python tools/build_data.py`; `--summary CLASS --weak` lists talents the generator couldn't explain).
+- Presets need a real author and a licence that allows redistribution; never invent attributions.
 - Blizzard addon policy: free, no ads or donation prompts, no obfuscation. Check licences before vendoring libraries.
 
 ## Layout
-TOC load order: Core → Data → Model → Core/Probe → UI. Panes register with `ns.Window.RegisterPane(key, build)`; nav rail entries are in `UI/Window.lua`.
+TOC load order: Core → Data → Model → Core/Probe, Core/Measure → UI.
+- `Model/`: Plan (rules), SynergyGraph, Talents (C_Traits reader), Codecs (loadout string, share formats), Compare, Attribution (fight estimates, benchmark), Presets (+ leveling paths), StatWeights. All but Talents are pure.
+- `Core/Measure.lua`: damage meter capture after combat and benchmark runs.
+- `UI/`: one file per pane; panes register with `ns.Window.RegisterPane(key, build)`; nav rail entries are in `UI/Window.lua`. `ns.Planner.Current()` is the plan on screen for other panes.
 
 ## Repo and deploy
 - GitHub `D4rkL1ch/BuildAtlas` (public, GPL-3.0). Not inside the WoW folder. Never commit secrets, tokens, local paths, account or character names.

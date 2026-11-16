@@ -28,3 +28,9 @@ First run: client 1.60.1.70938, level 40 Warrior, 2026-11-16. Out-of-combat part
 - [ ] In-combat stat secrecy (Q5) and the after-combat damage meter sample (Q6): fight once after `/batlas probe`, then `/reload`.
 - [ ] Milestone talents (11/16/21/31 points): no node with `ranksGranted` seen on Warrior yet.
 - [ ] Is "prerequisite maxed" the rule for every edge type?
+- [ ] Apply: `C_Traits.PurchaseRank` per rank then `C_Traits.CommitConfig(configID)` on the active combat config; does the commit cast fire `TRAIT_CONFIG_UPDATED` (success) / `CONFIG_COMMIT_FAILED`?
+- [ ] Import strings: does the game's own import accept a string exported by Build Atlas (zero tree hash for Wowhead links)?
+- [ ] `C_Item.GetItemStats` keys for Forever items (crit/hit may be spell effects rather than stats on Classic items).
+- [ ] Enchant ID position in item links (`item:ID:enchant:...`).
+- [ ] Pawn: does `PawnImportScale(tag, true)` exist and import the scale?
+- [ ] Addon messages: `CHAT_MSG_ADDON` delivery for party, guild and whisper with prefix "BuildAtlas".
