@@ -1,6 +1,6 @@
 # Probe results (milestone M0)
 
-How to run: log in on Forever, `/atlas probe`, fight anything once (a training dummy is fine), wait for the "combat samples recorded" chat line, then `/reload`. The results land in `BuildAtlasDB.probe` (account SavedVariables).
+How to run: log in on Forever, `/batlas probe`, fight anything once (a training dummy is fine), wait for the "combat samples recorded" chat line, then `/reload`. The results land in `BuildAtlasDB.probe` (account SavedVariables).
 
 Status: **in-game run pending**. The column "From Blizzard source" is what the Forever branch of Blizzard's UI code (Gethe/wow-ui-source, `forever` branch) already shows; the in-game run confirms or corrects it.
 

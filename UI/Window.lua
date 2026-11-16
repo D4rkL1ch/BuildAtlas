@@ -278,17 +278,17 @@ end
 ns:RegisterEvent("PLAYER_REGEN_DISABLED", function() Window.Refresh() end)
 ns:RegisterEvent("PLAYER_REGEN_ENABLED", function() Window.Refresh() end)
 
-ns:AddCommand("show", function() Window.Toggle("planner") end, "/atlas - open or close the talent planner")
+ns:AddCommand("show", function() Window.Toggle("planner") end, "/batlas - open or close the talent planner")
 ns:AddCommand("scale", function(arg)
 	local n = tonumber(arg)
 	if not n or n < 0.4 or n > 1.5 then
-		ns:Print(L["Usage: /atlas scale 0.4-1.5 (now "] .. tostring(ns.db.settings.scale) .. ")")
+		ns:Print(L["Usage: /batlas scale 0.4-1.5 (now "] .. tostring(ns.db.settings.scale) .. ")")
 		return
 	end
 	Window.SetScale(n)
-end, "/atlas scale <0.4-1.5> - window size")
+end, "/batlas scale <0.4-1.5> - window size")
 ns:AddCommand("reset", function()
 	wipe(ns.db.window)
 	if frame then restorePosition() end
 	ns:Print(L["Window position reset."])
-end, "/atlas reset - move the window back to the center")
+end, "/batlas reset - move the window back to the center")

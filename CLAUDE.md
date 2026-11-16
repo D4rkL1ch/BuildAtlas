@@ -5,7 +5,7 @@ WoW Forever addon (client 1.60.x, `## Interface: 16001`, modern Mainline-style A
 ## How to work
 - Build one milestone (HANDOFF.md §6) at a time. Don't start the next until the user confirms the current one works in-game.
 - At the end of a step, list exactly what the user should test in-game (`/reload` or restart, what to click, expected result).
-- Platform facts come from the probe (`/atlas probe`, results in `docs/probe-results.md`) or Blizzard's Forever UI source. Don't build on an unverified fact without a guarded fallback; record open questions in `docs/probe-results.md`.
+- Platform facts come from the probe (`/batlas probe`, results in `docs/probe-results.md`) or Blizzard's Forever UI source. Don't build on an unverified fact without a guarded fallback; record open questions in `docs/probe-results.md`.
 - Project skills in `.claude/skills/`: `deploy-and-check` before the user tests in-game, `forever-api-check` before using an API not yet in the addon, `read-saved-data` to read probe results and saved plans.
 
 ## Code rules

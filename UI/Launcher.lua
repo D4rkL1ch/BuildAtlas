@@ -2,7 +2,7 @@ local addonName, ns = ...
 
 -- Ways to open the window. The LibDBIcon minimap button and toasts from
 -- design/Launcher.dc.html come later; for now the addon compartment (the
--- addons button by the minimap) and /atlas.
+-- addons button by the minimap) and /batlas.
 
 local L = ns.L
 

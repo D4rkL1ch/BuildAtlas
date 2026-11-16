@@ -6,7 +6,7 @@ local function open()
 	return ns, ns.Window.frame
 end
 
-T.test("ui: /atlas opens the planner with the live tree", function()
+T.test("ui: /batlas opens the planner with the live tree", function()
 	local ns, frame = open()
 	T.ok(frame and frame:IsShown(), "window shown")
 	local text = T.stubs.visibleText(frame)
@@ -19,7 +19,7 @@ T.test("ui: /atlas opens the planner with the live tree", function()
 	local state = ns.Planner._State()
 	T.eq(state.selected, 101, "first learned talent selected")
 	T.stubs.slash("")
-	T.eq(frame:IsShown(), false, "/atlas toggles")
+	T.eq(frame:IsShown(), false, "/batlas toggles")
 end)
 
 T.test("ui: plus/minus change the plan, not the game", function()

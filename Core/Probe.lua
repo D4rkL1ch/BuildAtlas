@@ -1,6 +1,6 @@
 local addonName, ns = ...
 
--- /atlas probe: answers the open platform questions (docs/probe-results.md)
+-- /batlas probe: answers the open platform questions (docs/probe-results.md)
 -- by calling the APIs and saving what came back to BuildAtlasDB.probe. The
 -- in-combat and after-combat parts run on the next fight by themselves.
 -- Debug tool; nothing here changes game state except setting up the view
@@ -383,10 +383,10 @@ end)
 
 ns:AddCommand("probe", function(arg)
 	if arg == "dm" then
-		if not (ns.db and ns.db.probe) then ns:Print("Run /atlas probe first.") return end
+		if not (ns.db and ns.db.probe) then ns:Print("Run /batlas probe first.") return end
 		ns.db.probe.q6_damageMeter.manual = probeDamageMeter()
 		ns:Print("Damage meter sample recorded.")
 		return
 	end
 	Probe.Run()
-end, "/atlas probe - dump talent/API facts to SavedVariables (debug); /atlas probe dm - sample the damage meter now")
+end, "/batlas probe - dump talent/API facts to SavedVariables (debug); /batlas probe dm - sample the damage meter now")

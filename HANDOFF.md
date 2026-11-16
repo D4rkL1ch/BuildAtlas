@@ -41,7 +41,7 @@ A **WoW Forever** theorycrafting addon whose core is an in-game talent planner t
 
 ## 3. Probe first (Milestone 0 — before building features)
 
-Many facts above come from community notes. Write a `/atlas probe` debug command that dumps results to SavedVariables, and run it in game. Report findings back to the user before building on them.
+Many facts above come from community notes. Write a `/batlas probe` debug command that dumps results to SavedVariables, and run it in game. Report findings back to the user before building on them.
 
 1. Can we read **other classes' trees**? Try `C_Traits.GetTreeNodes(treeID)` → `GetNodeInfo` → `GetEntryInfo` → `GetDefinitionInfo` for each class tree ID. Discover the full nine-class tree-ID table.
 2. Does `C_ClassTalents.InitializeViewLoadout` / `ViewLoadout` work?
@@ -112,7 +112,7 @@ Shared look (see `design/Main.dc.html` `<style>` block for exact values): dark p
 | 6 | `Share.dc.html` | **Import / export** | Export tabs: Build Atlas string (versioned, build-stamped), Wowhead link, Talents Forever link, SimC profile, MythicSim profile. Read-only edit box + "Select all" (no clipboard API — user presses Ctrl+C). Import: paste box with auto-detect + tree-version check → load as scratch or as compare B. Send to party/guild/player via addon messages — **disabled inside instances**. |
 | 7 | `FightReport.dc.html` | **Fight report** | Recent fights list (from `C_DamageMeter` after combat; merge selection). KPIs: damage, duration, DPS, "% from talents (est.)". By-spell bars. **Talent contribution table** with method tag: *Modeled* (`damage × bonus/(1+bonus)` from graph), *Rough* (crit/proc-based, can't observe in combat), *Direct* (ability granted by talent). Always labelled as estimates. |
 | 8 | `Benchmark.dc.html` | **Dummy benchmark** | Arm a run (1/2/3/5 min), tag it with a build; starts on first hit, results captured after combat. Averages + ranges per build, overlap warning, run history with delete; exclude runs whose gear snapshot differs. No live numbers during the run. |
-| 9 | `Launcher.dc.html` | **Launcher + toasts** | LibDBIcon minimap button (click = planner, shift-click = last report), menu, `/atlas`, `/atlas report`, `/atlas bench`. Toasts: fight report ready, data older than client, paused in combat. |
+| 9 | `Launcher.dc.html` | **Launcher + toasts** | LibDBIcon minimap button (click = planner, shift-click = last report), menu, `/batlas`, `/batlas report`, `/batlas bench`. Toasts: fight report ready, data older than client, paused in combat. |
 | 10 | `Gear.dc.html` | **Stats & gear** | Stat weights from: own estimate (coefficients + talents, rough), Pawn scale, or pasted sim weights. "Send to Pawn" if Pawn is loaded (integrate, don't compete). Upgrade check over bags/bank with % vs equipped + one-line talent-aware note (`C_Item.GetItemStats`, `C_TooltipComparison`). Consumables/enchants/gems checklist from curated table keyed to class+build, counts across bags/bank/alts. |
 | 11 | `Presets.dc.html` | **Presets** | Bundled community builds filtered by role, each with author + licence (e.g. CC BY 4.0), tree version, "why it works", key talents, out-of-combat "how to play" steps. Load into planner / compare / see synergies. No web access from Lua — presets ship with releases. |
 | 12 | `Leveling.dc.html` | **Leveling path** | 51 level tiles (10–60): learned/current/milestone/selected; detail panel; optional level-up reminder (never auto-learns in combat). Dual-spec plan card (unlock at 40, 50g). |
@@ -121,7 +121,7 @@ Shared look (see `design/Main.dc.html` `<style>` block for exact values): dark p
 
 ## 6. Milestones & acceptance
 
-- **M0 Probe** — `/atlas probe` + `docs/probe-results.md`. *Done when* the user has the answers to §3.
+- **M0 Probe** — `/batlas probe` + `docs/probe-results.md`. *Done when* the user has the answers to §3.
 - **M1 Data pipeline** — `tools/` produces `Data_<build>.lua` for Warrior with modifier edges, per-rank values, scaling, Classic diff; overrides merged. *Done when* spot checks of 10 talents match in-game tooltips.
 - **M2 Planner MVP** — window shell, nav rail, planner, inspector, spell view, tooltip hooks, launcher, build-mismatch notice. Warrior first, then all 9 classes. *Done when* you can plan any class without respec and the teal highlights match the graph.
 - **M3 Share & apply** — codecs (own string + Wowhead + Talents Forever + wowforevertalent + Method import), export tabs, addon-message sharing, apply dialog with all states. *Done when* round-trip export→import is lossless and applying works out of combat and is refused in combat.

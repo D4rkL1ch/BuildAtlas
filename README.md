@@ -6,12 +6,12 @@ Status: **early proof of concept**. Not released.
 
 ## What works now
 
-- `/atlas` opens the planner: all three trees of your class, read live from the game.
+- `/batlas` opens the planner: all three trees of your class, read live from the game.
 - Plan in a scratch slot or per spec (Spec 1 / Spec 2). Planning never changes your real talents.
 - Tier, 51-point and prerequisite rules, with the reason when a rank can't be added or removed.
 - Inspector with the game's own per-rank text.
 - Other classes through the class menu (out of combat), if the client allows it.
-- `/atlas probe` dumps platform facts to SavedVariables (developer tool).
+- `/batlas probe` dumps platform facts to SavedVariables (developer tool).
 
 Controls: click a talent to inspect it, Shift-click to add a rank, right-click to remove one, or use + / − in the inspector.
 
@@ -19,7 +19,7 @@ Controls: click a talent to inspect it, Shift-click to add a rank, right-click t
 
 | Milestone | Content |
 |---|---|
-| M0 | Probe the platform (`/atlas probe`, [docs/probe-results.md](docs/probe-results.md)) |
+| M0 | Probe the platform (`/batlas probe`, [docs/probe-results.md](docs/probe-results.md)) |
 | M1 | Data pipeline: which spells each talent modifies, per-rank values, Classic diff |
 | M2 | Planner, inspector, synergy highlights, tooltip hooks, minimap button |
 | M3 | Import/export (own string, Wowhead, Talents Forever, …), apply dialog |

@@ -127,13 +127,13 @@ end)
 local commands = {}
 local commandHelp = {}
 
--- Modules add subcommands: ns:AddCommand("probe", fn, "/atlas probe - ...").
+-- Modules add subcommands: ns:AddCommand("probe", fn, "/batlas probe - ...").
 function ns:AddCommand(name, fn, help)
 	commands[name] = fn
 	if help then commandHelp[#commandHelp + 1] = help end
 end
 
-SLASH_BUILDATLAS1 = "/atlas"
+SLASH_BUILDATLAS1 = "/batlas"
 SLASH_BUILDATLAS2 = "/buildatlas"
 SlashCmdList.BUILDATLAS = function(msg)
 	msg = strtrim(msg or "")

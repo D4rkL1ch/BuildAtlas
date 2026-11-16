@@ -1,6 +1,6 @@
 ---
 name: read-saved-data
-description: Read Build Atlas's SavedVariables (BuildAtlasDB, account-wide; BuildAtlasCharDB, per character) from the WoW Forever client folder to see what the addon recorded in-game, e.g. /atlas probe results, settings, window position, saved plans. Use after the user ran /atlas probe, when debugging something that works in tests but not in-game, or when the user asks what the addon has saved.
+description: Read Build Atlas's SavedVariables (BuildAtlasDB, account-wide; BuildAtlasCharDB, per character) from the WoW Forever client folder to see what the addon recorded in-game, e.g. /batlas probe results, settings, window position, saved plans. Use after the user ran /batlas probe, when debugging something that works in tests but not in-game, or when the user asks what the addon has saved.
 ---
 
 # Read the saved data
