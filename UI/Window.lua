@@ -20,15 +20,15 @@ local NAV = {
 		{ key = "planner", label = "Talent planner" },
 		{ key = "synergy", label = "Synergy map" },
 		{ key = "compare", label = "Compare builds" },
-		{ key = "presets", label = "Presets", milestone = "M6" },
-		{ key = "leveling", label = "Leveling path", milestone = "M6" },
+		{ key = "presets", label = "Presets" },
+		{ key = "leveling", label = "Leveling path" },
 	} },
 	{ label = "Measure", items = {
 		{ key = "report", label = "Fight report" },
 		{ key = "bench", label = "Benchmark" },
 	} },
 	{ label = "Gear & share", items = {
-		{ key = "gear", label = "Stats & gear", milestone = "M6" },
+		{ key = "gear", label = "Stats & gear" },
 		{ key = "share", label = "Import / export" },
 	} },
 }

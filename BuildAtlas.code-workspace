@@ -39,7 +39,10 @@
 			"MinimalSliderWithSteppersMixin",
 			"MenuUtil",
 			"Minimap",
-			"GetMinimapShape"
+			"GetMinimapShape",
+			"PawnImportScale",
+			"GetItemStats",
+			"GetItemInfoInstant"
 		]
 	}
 }

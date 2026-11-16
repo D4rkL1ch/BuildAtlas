@@ -19,7 +19,7 @@ for _, name in ipairs({
 	"SetDesaturated", "SetThickness", "SetStartPoint", "SetEndPoint", "SetFrameLevel",
 	"AddLine", "AddDoubleLine", "SetOwner", "GenerateMenu", "SetShadowColor", "SetShadowOffset",
 	"ClearLines", "SetHighlightTexture", "SetFrameStrata", "SetMultiLine", "SetAutoFocus",
-	"SetScrollChild", "SetCursorPosition", "HighlightText", "SetFocus", "ClearFocus",
+	"SetScrollChild", "SetCursorPosition", "HighlightText", "SetFocus", "ClearFocus", "SetHyperlink",
 }) do W[name] = noop end
 
 local function newWidget(kind, parent)
@@ -71,6 +71,8 @@ end
 function W:SetEnabled(enabled) self.enabled = enabled and true or false end
 function W:IsEnabled() return self.enabled end
 function W:SetText(text) self.text = text end
+function W:SetChecked(v) self.checked = v end
+function W:GetChecked() return self.checked end
 function W:GetText() return self.text end
 function W:SetColorTexture(r, g, b, a) self.color = { r, g, b, a } end
 function W:SetTexture(t) self.texture = t end
@@ -263,6 +265,25 @@ function M.reset()
 	M.purchased = {}
 	M.unspent = 20
 	M.gear = { [16] = 19019 }
+	-- Items: link -> { loc, subType, stats }; bags[bag] = { link, ... }; equipped[slot] = link.
+	M.items = {
+		["item:1:0"] = { "INVTYPE_2HWEAPON", "Two-Handed Axes", { ITEM_MOD_STRENGTH_SHORT = 30, ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 50 } },
+		["item:2:0"] = { "INVTYPE_2HWEAPON", "Two-Handed Swords", { ITEM_MOD_STRENGTH_SHORT = 10, ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 40 } },
+		["item:3:0"] = { "INVTYPE_CHEST", "Plate", { ITEM_MOD_STAMINA_SHORT = 20 } },
+	}
+	M.bags = { [0] = { "item:1:0", "item:9:0" } }
+	M.equipped = { [16] = "item:2:0", [5] = "item:3:0" }
+	M.itemCounts = { [13452] = 3 }
+	C_Container = {
+		GetContainerNumSlots = function(bag) return M.bags[bag] and #M.bags[bag] or 0 end,
+		GetContainerItemLink = function(bag, slot) return M.bags[bag] and M.bags[bag][slot] end,
+	}
+	C_Item = {
+		GetItemStats = function(link) local i = M.items[link] return i and i[3] end,
+		GetItemInfoInstant = function(link) local i = M.items[link] if i then return 1, "Weapon", i[2], i[1] end end,
+		GetItemCount = function(id) return M.itemCounts[id] or 0 end,
+		GetItemNameByID = function() return nil end,
+	}
 	M.sentAddon = {}
 	M.instance, M.raid = false, false
 	C_ChatInfo = {
@@ -365,6 +386,8 @@ function IsInInstance() return M.instance, M.instance and "party" or "none" end
 function IsInRaid() return M.raid end
 function UnitRace() return "Human", "Human" end
 function UnitName() return "Tester" end
+function GetInventoryItemLink(_, slot) return M.equipped[slot] end
+function GetMoney() return 1234567 end
 function GetInventoryItemID(_, slot) return M.gear[slot] end
 function GetTime() return M.now or 0 end
 function IsShiftKeyDown() return M.shift end

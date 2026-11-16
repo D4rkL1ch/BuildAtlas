@@ -16,6 +16,8 @@ Core\Util.lua
 
 Data\Classes.lua
 Data\TalentData.lua
+Data\Presets.lua
+Data\Consumables.lua
 
 Model\Plan.lua
 Model\SynergyGraph.lua
@@ -24,6 +26,8 @@ Model\Codecs\Loadout.lua
 Model\Codecs\Share.lua
 Model\Compare.lua
 Model\Attribution.lua
+Model\Presets.lua
+Model\StatWeights.lua
 
 Core\Probe.lua
 Core\Measure.lua
@@ -39,5 +43,8 @@ UI\Compare.lua
 UI\SynergyMap.lua
 UI\FightReport.lua
 UI\Benchmark.lua
+UI\Presets.lua
+UI\Leveling.lua
+UI\Gear.lua
 UI\Launcher.lua
 UI\Settings.lua

@@ -797,7 +797,124 @@ def main() -> int:
         lines.append("")
     OUT.write_text("\n".join(lines), encoding="utf-8", newline="\n")
     print(f"{total} talents -> {OUT.relative_to(ROOT.parent)}")
+    build_presets(db, build)
     return 0
+
+
+# Presets -----------------------------------------------------------------------------
+
+PRESETS_IN = ROOT / "presets.json"
+PRESETS_OUT = ROOT.parent / "Data" / "Presets.lua"
+ROW_STEP, POINTS_PER_TIER, MAX_POINTS = 600, 5, 51
+
+
+def tree_layout(db: Db, tree_id: int) -> dict[int, dict]:
+    """spellID -> {tab, row, max, prereqs (spellIDs)} for a class tree.
+    Tabs are the three node groups that split the tree's nodes between them."""
+    nodes = {nid: n for nid, n in db.nodes.items() if int(n["TraitTreeID"]) == tree_id}
+    members: dict[int, set[int]] = defaultdict(set)
+    for r in read(DB2 / "TraitNodeGroupXTraitNode.csv"):
+        nid = int(r["TraitNodeID"])
+        if nid in nodes:
+            members[int(r["TraitNodeGroupID"])].add(nid)
+    all_ids = set(nodes)
+    groups = sorted(members, key=lambda g: -len(members[g]))
+    tabs = None
+    for i, a in enumerate(groups):
+        for j, b in enumerate(groups[i + 1:], i + 1):
+            if members[a] & members[b]:
+                continue
+            for c in groups[j + 1:]:
+                if not (members[c] & (members[a] | members[b])) and members[a] | members[b] | members[c] == all_ids:
+                    tabs = [a, b, c]
+                    break
+            if tabs:
+                break
+        if tabs:
+            break
+    if not tabs:
+        raise SystemExit(f"tree {tree_id}: no three groups split the tree")
+    tabs.sort(key=lambda g: min(int(nodes[n]["PosX"]) for n in members[g]))
+    min_y = min(int(n["PosY"]) for n in nodes.values())
+    spell_of = {}
+    for nid in nodes:
+        entry = db.entries[db.node_entries[nid][0]]
+        spell_of[nid] = int(num(db.definitions[int(entry["TraitDefinitionID"])]["SpellID"]))
+    prereqs: dict[int, list[int]] = defaultdict(list)
+    for r in read(DB2 / "TraitEdge.csv"):
+        left, right = int(r["LeftTraitNodeID"]), int(r["RightTraitNodeID"])
+        if left in nodes and right in nodes:
+            prereqs[right].append(left)
+    out = {}
+    for nid, n in nodes.items():
+        tab = next(i for i, g in enumerate(tabs) if nid in members[g])
+        entry = db.entries[db.node_entries[nid][0]]
+        out[spell_of[nid]] = {
+            "tab": tab, "row": (int(n["PosY"]) - min_y) // ROW_STEP, "max": int(num(entry["MaxRanks"])),
+            "prereqs": [spell_of[p] for p in prereqs[nid]],
+        }
+    return out
+
+
+def check_preset(p: dict, layout: dict[int, dict]) -> list[str]:
+    """Walks the learning order like the game would; returns rule violations."""
+    errors, ranks, per_tab = [], defaultdict(int), defaultdict(int)
+    for spell, target in p["order"]:
+        t = layout.get(spell)
+        if not t:
+            errors.append(f"{spell}: not in the tree")
+            continue
+        if target > t["max"] or target <= ranks[spell]:
+            errors.append(f"{spell}: rank {target} (have {ranks[spell]}, max {t['max']})")
+            continue
+        if per_tab[t["tab"]] < t["row"] * POINTS_PER_TIER:
+            errors.append(f"{spell}: row {t['row']} needs {t['row'] * POINTS_PER_TIER} points in tab {t['tab'] + 1}, has {per_tab[t['tab']]}")
+        for pre in t["prereqs"]:
+            if ranks[pre] < layout[pre]["max"]:
+                errors.append(f"{spell}: needs {pre} maxed first")
+        per_tab[t["tab"]] += target - ranks[spell]
+        ranks[spell] = target
+    total = sum(per_tab.values())
+    if total != MAX_POINTS:
+        errors.append(f"{total} points instead of {MAX_POINTS}")
+    p["split"] = "/".join(str(per_tab[i]) for i in range(3))
+    return errors
+
+
+def build_presets(db: Db, build: str) -> None:
+    if not PRESETS_IN.exists():
+        return
+    presets = json.loads(PRESETS_IN.read_text(encoding="utf-8"))["presets"]
+    by_token = {v[0]: (cid, v[1]) for cid, v in CLASSES.items()}
+    layouts: dict[int, dict] = {}
+    failed = False
+    out = []
+    for p in presets:
+        cid, tree = by_token[p["class"]]
+        for field in ("name", "role", "author", "license", "why", "order"):
+            if not p.get(field):
+                raise SystemExit(f"preset {p.get('name')!r}: missing {field}")
+        layout = layouts.setdefault(tree, tree_layout(db, tree))
+        errors = check_preset(p, layout)
+        if errors:
+            failed = True
+            print(f"preset {p['name']!r} is invalid:\n  " + "\n  ".join(errors))
+        out.append({
+            "classID": cid, "name": p["name"], "role": p["role"], "author": p["author"], "license": p["license"],
+            "why": p["why"], "keys": p.get("keys", []), "play": p.get("play", []), "split": p["split"],
+            "order": [[s, r] for s, r in p["order"]], "build": build,
+        })
+    if failed:
+        raise SystemExit("presets.json has invalid presets")
+    lines = [
+        "-- Generated by tools/build_data.py from tools/presets.json. Do not edit.",
+        "local addonName, ns = ...",
+        "",
+        "ns.PresetData = " + lua(out),
+        "",
+    ]
+    PRESETS_OUT.write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    print(f"{len(out)} presets -> {PRESETS_OUT.relative_to(ROOT.parent)}")
 
 
 if __name__ == "__main__":
