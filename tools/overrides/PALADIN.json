@@ -1,0 +1,74 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Illumination": {
+      "mods": [
+        {"spell": "Holy Light", "fx": "crits refund mana"},
+        {"spell": "Flash of Light", "fx": "crits refund mana"},
+        {"spell": "Holy Shock", "fx": "crits refund mana"}
+      ],
+      "stats": ["Spell crit"],
+      "note": "Resource loop: heal crits refund mana, so spell crit is also mana regen for a Holy paladin."
+    },
+    "Holy Power": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": "Holy Light", "fx": "bigger crit heals"},
+        {"spell": "Flash of Light", "fx": "bigger crit heals"},
+        {"spell": "Holy Shock", "fx": "bigger crit heals"}
+      ],
+      "stats": ["Spell crit", "Healing power"],
+      "note": "Bigger crits also mean bigger Illumination refunds are worth chasing with crit."
+    },
+    "Infusion of Light": {
+      "note": "Proc chain: Holy Shock or Flash of Light crit → faster next Holy Light."
+    },
+    "Boundless Light": {
+      "note": "Crit bonus for Holy Shock on allies outside your Oath of Light, which feeds Illumination and Infusion of Light."
+    },
+    "Oath of Light": {
+      "note": "Single-target focus: stronger heals on one sworn ally (usually the tank)."
+    },
+    "Vengeance": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": 6603, "fx": "more damage after a crit"},
+        {"spell": "Holy Strike", "fx": "more damage after a crit"},
+        {"spell": "Exorcism", "fx": "more damage after a crit"},
+        {"spell": "Consecration", "fx": "more damage after a crit"}
+      ],
+      "stats": ["Crit"],
+      "note": "Proc chain: crits stack Vengeance (up to 5) → more Physical and Holy damage. Keeps up best with high crit (Conviction)."
+    },
+    "Conviction": {
+      "mods": [{"spell": 6603, "fx": "more crits"}],
+      "stats": ["Crit"],
+      "note": "More crits keep Vengeance stacked and feed Illumination."
+    },
+    "Reckoning": {
+      "mods": [{"spell": 6603, "fx": "stored extra attacks"}],
+      "stats": ["Block"],
+      "note": "Proc chain: block or being crit → extra swings (up to 4 stored)."
+    },
+    "Redoubt": {
+      "stats": ["Block"],
+      "note": "Proc: being hit → more block for 5 blocks; pairs with Holy Shield and Reckoning."
+    },
+    "Holy Shield": {
+      "stats": ["Block", "Spell power"],
+      "note": "Every block deals Holy damage with extra threat; more block (Redoubt) means more damage and Reckoning procs."
+    },
+    "Sanctified Judgement": {
+      "note": "Resource loop: Judgement returns most of the seal's mana cost."
+    },
+    "Shield Specialization": {
+      "stats": ["Block"],
+      "note": "Resource loop: blocks restore mana."
+    },
+    "Eye for an Eye": {"stats": ["Health"]},
+    "Vindication": {"mods": [{"spell": 6603, "fx": "hits can weaken the target"}]},
+    "Divine Intellect": {"stats": ["Intellect"]},
+    "Divine Strength": {"stats": ["Strength"]},
+    "Reverence": {"stats": ["Spirit", "Mana regen"]}
+  }
+}

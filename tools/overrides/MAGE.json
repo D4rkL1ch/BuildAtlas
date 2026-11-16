@@ -1,0 +1,92 @@
+{
+  "_comment": "See WARRIOR.json for the format. replaceMods drops all generated links first.",
+  "talents": {
+    "Ignite": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": "Fireball", "fx": "crits leave a burn"},
+        {"spell": "Fire Blast", "fx": "crits leave a burn"},
+        {"spell": "Scorch", "fx": "crits leave a burn"},
+        {"spell": "Pyroblast", "fx": "crits leave a burn"},
+        {"spell": "Flamestrike", "fx": "crits leave a burn"}
+      ],
+      "stats": ["Spell crit", "Spell power"],
+      "note": "Proc chain: Fire crit → Ignite burn for a share of the hit. More crit (Critical Mass, Combustion) and bigger hits (Fire Power) mean bigger Ignites."
+    },
+    "Master of Elements": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": "Fireball", "fx": "crits refund mana"},
+        {"spell": "Frostbolt", "fx": "crits refund mana"},
+        {"spell": "Scorch", "fx": "crits refund mana"},
+        {"spell": "Fire Blast", "fx": "crits refund mana"}
+      ],
+      "stats": ["Spell crit"],
+      "note": "Resource loop: every Fire or Frost crit refunds part of its mana cost, so crit doubles as mana regen."
+    },
+    "Combustion": {
+      "mods": [
+        {"spell": "Fireball", "fx": "more crit while active"},
+        {"spell": "Pyroblast", "fx": "more crit while active"},
+        {"spell": "Scorch", "fx": "more crit while active"}
+      ],
+      "stats": ["Spell crit"],
+      "note": "Burst: stacking Fire crit for three crits; each crit also feeds Ignite and Master of Elements."
+    },
+    "Fire Power": {
+      "stats": ["Spell power"],
+      "note": "Scales with how many of your Fire effects are on the target (Ignite, Living Bomb, Pyroblast's burn)."
+    },
+    "Arcane Concentration": {
+      "mods": [
+        {"spell": "Arcane Missiles", "fx": "free cast after a proc"},
+        {"spell": "Fireball", "fx": "can proc a free spell"},
+        {"spell": "Frostbolt", "fx": "can proc a free spell"}
+      ],
+      "note": "Resource loop: any damage spell can make the next one free; spend Clearcasting on your most expensive spell."
+    },
+    "Shatter": {
+      "mods": [
+        {"spell": "Frostbolt", "fx": "big crit chance on Frozen targets"},
+        {"spell": "Ice Lance", "fx": "big crit chance on Frozen targets"},
+        {"spell": "Cone of Cold", "fx": "big crit chance on Frozen targets"}
+      ],
+      "stats": ["Spell crit"],
+      "note": "Combo: freeze (Frost Nova, Frostbite, Fingers of Frost) → Shatter crits."
+    },
+    "Fingers of Frost": {
+      "mods": [
+        {"spell": "Frostbolt", "fx": "chill can proc Fingers of Frost"},
+        {"spell": "Ice Lance", "fx": "hits as if the target were Frozen"}
+      ],
+      "note": "Proc chain: Chill → Fingers of Frost → next 2 spells count the target as Frozen → Shatter crits."
+    },
+    "Frostbite": {
+      "mods": [
+        {"spell": "Frostbolt", "fx": "chill can freeze the target"},
+        {"spell": "Cone of Cold", "fx": "chill can freeze the target"}
+      ],
+      "note": "Proc chain: Chill → Freeze → Shatter crits."
+    },
+    "Impact": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": "Fireball", "fx": "can stun"},
+        {"spell": "Fire Blast", "fx": "can stun"},
+        {"spell": "Scorch", "fx": "can stun"}
+      ]
+    },
+    "Heating Up": {
+      "note": "Proc chain: Fire crits → faster Pyroblast casts (up to 3 stacks). More crit, more Pyroblasts."
+    },
+    "Missile Barrage": {
+      "note": "Proc chain: Arcane Blast and your bolts → faster, cheaper Arcane Missiles."
+    },
+    "Winter's Chill": {
+      "note": "Combo: Frostbolt or empowered Ice Lance → Winter's Chill → your next Cone of Cold hits harder."
+    },
+    "Arcane Meditation": {"stats": ["Spirit", "Mana regen"]},
+    "Precision": {"stats": ["Spell hit"]},
+    "Magic Absorption": {"stats": ["Resistance", "Mana regen"]}
+  }
+}

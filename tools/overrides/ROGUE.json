@@ -1,0 +1,53 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Seal Fate": {
+      "mods": [
+        {"spell": "Sinister Strike", "fx": "crits add a combo point"},
+        {"spell": "Backstab", "fx": "crits add a combo point"},
+        {"spell": "Mutilate", "fx": "crits add a combo point"},
+        {"spell": "Ambush", "fx": "crits add a combo point"}
+      ],
+      "stats": ["Crit"],
+      "note": "Resource loop: builder crits → extra combo points → finishers sooner. Crit (Malice, Lethality) drives it; Relentless Strikes and Ruthlessness feed off the finishers."
+    },
+    "Relentless Strikes": {
+      "mods": [
+        {"spell": "Eviscerate", "fx": "finishers can restore Energy"},
+        {"spell": "Slice and Dice", "fx": "finishers can restore Energy"},
+        {"spell": "Rupture", "fx": "finishers can restore Energy"},
+        {"spell": "Kidney Shot", "fx": "finishers can restore Energy"}
+      ],
+      "note": "Resource loop: 5-point finishers almost always refund Energy, which buys the next builder."
+    },
+    "Ruthlessness": {
+      "mods": [
+        {"spell": "Eviscerate", "fx": "finishers can leave a combo point"},
+        {"spell": "Slice and Dice", "fx": "finishers can leave a combo point"},
+        {"spell": "Rupture", "fx": "finishers can leave a combo point"}
+      ],
+      "note": "Resource loop: finishers can start the next cycle with a free combo point."
+    },
+    "Hack and Slash": {
+      "mods": [{"spell": 6603, "fx": "bonus by weapon type"}],
+      "note": "Axe/Sword: extra attacks. Dagger/Fist: crit bonus (feeds Seal Fate)."
+    },
+    "Dual Wield Specialization": {
+      "mods": [{"spell": 6603, "fx": "more off-hand damage"}],
+      "stats": ["Weapon damage"]
+    },
+    "Setup": {
+      "stats": ["Dodge"],
+      "note": "Resource loop: dodges and resists add combo points (pairs with Lightning Reflexes)."
+    },
+    "Initiative": {"note": "Openers from Stealth start with an extra combo point."},
+    "Remorseless Attacks": {"note": "After a kill, the next builder has much higher crit (and so Seal Fate)."},
+    "Improved Poisons": {"note": "More poison applications; Venom and Malice make poisons hit harder."},
+    "Malice": {"stats": ["Crit"], "note": "More crits feed Seal Fate."},
+    "Vigor": {"note": "Larger Energy pool: more room to pool for burst and Relentless Strikes refunds."},
+    "Weapon Expertise": {"mods": [{"spell": 6603, "fx": "fewer dodges and parries"}], "stats": ["Expertise"]},
+    "Boot Knife": {"note": "Shank builds 2 combo points."},
+    "Venom": {"note": "Combo: Shank → stronger and more frequent poisons for 6 sec."},
+    "Death Mark": {"note": "Burst: stores part of your damage (double for Garrote and Rupture) and releases it after 6 sec."}
+  }
+}

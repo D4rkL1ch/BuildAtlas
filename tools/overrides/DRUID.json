@@ -1,0 +1,55 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Blood Frenzy": {
+      "mods": [
+        {"spell": "Claw", "fx": "crits add a combo point"},
+        {"spell": "Rake", "fx": "crits add a combo point"},
+        {"spell": "Shred", "fx": "crits add a combo point"},
+        {"spell": "Maul", "fx": "crits generate Rage"}
+      ],
+      "stats": ["Crit"],
+      "note": "Resource loop: crits give Rage in Bear Form and extra combo points in Cat Form. Sharpened Claws and Leader of the Pack add crit."
+    },
+    "Furor": {
+      "note": "Resource loop: shapeshift into Bear for Rage, or back into Cat keeping your Energy (plus some)."
+    },
+    "Predatory Strikes": {"stats": ["Attack power"], "note": "Feral Attack Power that grows with your level."},
+    "Sharpened Claws": {
+      "mods": [{"spell": 6603, "fx": "more crits in forms"}],
+      "stats": ["Crit"],
+      "note": "More crits feed Blood Frenzy."
+    },
+    "Leader of the Pack": {"stats": ["Crit"], "note": "Group buff: +3% crit for the party while you are in a feral form."},
+    "Rend and Tear": {
+      "mods": [
+        {"spell": "Rake", "fx": "keeps the target bleeding"},
+        {"spell": "Rip", "fx": "keeps the target bleeding"},
+        {"spell": "Shred", "fx": "more damage on bleeding targets"},
+        {"spell": "Ferocious Bite", "fx": "more damage on bleeding targets"},
+        {"spell": "Maul", "fx": "more damage on bleeding targets"}
+      ],
+      "note": "Combo: keep Rake or Rip up, then everything else hits harder."
+    },
+    "Predatory Discipline": {"note": "Ferocious Bite no longer eats your extra Energy."},
+    "Heart of the Wild": {"stats": ["Intellect", "Stamina", "Strength"]},
+    "Thick Hide": {"stats": ["Armor"], "note": "Tanking: more base armor in forms."},
+    "Natural Reaction": {"stats": ["Dodge"], "note": "Resource loop: dodges in Bear Form give Rage."},
+    "Nature's Grace": {
+      "mods": [
+        {"spell": "Wrath", "fx": "crits speed up the next cast"},
+        {"spell": "Starfire", "fx": "crits speed up the next cast"},
+        {"spell": "Moonfire", "fx": "crits speed up the next cast"}
+      ],
+      "stats": ["Spell crit"],
+      "note": "Proc chain: spell crit → faster casts for 3 sec."
+    },
+    "Eclipse": {"note": "Combo: Wrath charges up faster Starfires (up to 4 charges)."},
+    "Bloom": {"stats": ["Spirit"], "note": "Rejuvenation and Regrowth heal again when they expire, based on your Spirit."},
+    "Wild Growth": {"note": "Group heal over time that front-loads its healing."},
+    "Living Spirit": {"stats": ["Spirit"]},
+    "Reflection": {"stats": ["Spirit", "Mana regen"]},
+    "Overgrowth": {"note": "Root more targets at once."},
+    "Feral Swiftness": {"stats": ["Dodge"]}
+  }
+}

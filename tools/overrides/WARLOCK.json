@@ -1,0 +1,26 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Improved Imp": {"replaceMods": true, "note": "Pet talent: Imp's Firebolt and Fire Shield. Only matters with the Imp out."},
+    "Improved Voidwalker": {"note": "Pet talent: only matters with the Voidwalker out."},
+    "Improved Sayaad": {"note": "Pet talent: only matters with a Succubus or Incubus out."},
+    "Improved Felhunter": {"note": "Pet talent: only matters with the Felhunter out."},
+    "Unholy Power": {"note": "Pet talent: more damage from every demon."},
+    "Fel Vitality": {"stats": ["Mana"], "note": "Tougher demons and a bigger mana pool for you."},
+    "Master Demonologist": {
+      "replaceMods": true,
+      "note": "The bonus depends on the demon: Imp more Fire damage, Voidwalker less damage taken, Succubus more Shadow damage, Felhunter resistances. Pick the demon for the job."
+    },
+    "Demonic Knowledge": {"stats": ["Spell power"], "note": "Spell damage that grows with your level while a demon is out."},
+    "Demonic Pact": {"note": "Combo: keep Demonic Sacrifice's buff and still summon another demon."},
+    "Soul Siphon": {"note": "Combo: stack Corruption, Siphon Life and Bane of Agony first, then Drain Life, Drain Soul or Wrack."},
+    "Wrack": {"note": "Channel that speeds up your Corruption, Siphon Life and Bane of Agony ticks while it runs."},
+    "Improved Life Tap": {"note": "Resource loop: more mana per Life Tap."},
+    "Demonic Energies": {"note": "Resource loop: your spell damage heals your demon; Life Tap gives it mana too."},
+    "Soul Harvest": {"note": "Resource loop: Drain Soul kills boost mana regen."},
+    "Decimation": {"note": "Execute phase: Shadow Bolt or Searing Pain under 35% health → faster Soul Fire."},
+    "Fire and Brimstone": {"note": "More Conflagrate crits."},
+    "Bane of Havoc": {"note": "Multi-target: copies part of your damage onto a second enemy."},
+    "Demonic Embrace": {"stats": ["Stamina"], "note": "More health, which Life Tap turns into mana."}
+  }
+}

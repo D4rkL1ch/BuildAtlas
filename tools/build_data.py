@@ -62,7 +62,7 @@ STAT_AURAS = {
     71: "Spell crit", 79: "Damage", 85: "Regen", 99: "Attack power", 101: "Armor", 102: "Attack power",
     110: "Regen", 123: "Penetration", 133: "Health", 135: "Healing", 137: "Stats", 138: "Haste",
     142: "Armor", 150: "Block value", 158: "Block value", 166: "Attack power", 189: "Ratings",
-    192: "Haste", 200: "Experience", 290: "Crit", 319: "Haste",
+    192: "Haste", 200: "Experience", 290: "Crit", 319: "Haste", 134: "Spirit", 30: "Defense",
 }
 STAT_NAMES = {0: "Strength", 1: "Agility", 2: "Stamina", 3: "Intellect", 4: "Spirit"}
 
@@ -85,6 +85,8 @@ CRIT_OPS = {7, 15}
 # as synergies and in fight attribution.
 AUTO_ATTACK = 6603
 MELEE_AURAS = {52: "more melee crits", 54: "more melee hits", 138: "faster swings", 79: "more damage"}
+
+JUNK = re.compile(r"(?i)(dummy|test|dnd|dnt|unused|deprecated|placeholder)|\[")
 
 # Words too generic to link a description to an ability.
 GENERIC_NAMES = {"Attack", "Shoot", "Throw", "Auto Shot", "Charge", "Block", "Parry", "Dodge"}
@@ -391,10 +393,12 @@ class ClassBuilder:
         self.family_spells = [s for s in db.options if db.family(s) == self.fam and db.name(s)]
         self.ability_ids = db.class_spells[cid]
         self.by_name: dict[str, list[int]] = defaultdict(list)
+        # Developer leftovers in the class data ("Jeff Dummy 1", "[DNT]") are not abilities.
+        self.family_spells = [s for s in self.family_spells if not JUNK.search(db.name(s))]
         for s in self.family_spells:
             self.by_name[db.name(s)].append(s)
         for s in self.ability_ids:
-            if db.name(s) and s not in self.family_spells:
+            if db.name(s) and s not in self.family_spells and not JUNK.search(db.name(s)):
                 self.by_name[db.name(s)].append(s)
         self.key_of_name = {n: min(ids) for n, ids in self.by_name.items()}
         # Melee swings are reported as 6603 whatever the class ability is called.
@@ -405,6 +409,7 @@ class ClassBuilder:
         self.spells: dict[int, dict] = {}
         self.rank_map: dict[int, int] = {}
         self.procs: dict[int, list[int]] = {}
+        self.school_cache: dict[str, list[int]] = {}
         # Every spell by name, for proc damage siblings (the meter reports the
         # damage spell, which often has no class options of its own).
         self.db_by_name = db.ids_by_name
@@ -441,6 +446,24 @@ class ClassBuilder:
     def is_ability(self, sid: int) -> bool:
         name = self.db.name(sid)
         return any(s in self.ability_ids for s in self.by_name.get(name, []))
+
+    def school_abilities(self, school: str) -> list[int]:
+        """Class abilities of a school that deal damage or heal (one per name)."""
+        if school in self.school_cache:
+            return self.school_cache[school]
+        out = []
+        for name, ids in sorted(self.by_name.items()):
+            k = self.key_of_name[name]
+            if k == AUTO_ATTACK or not any(s in self.ability_ids for s in ids):
+                continue
+            if self.db.school(k) != school or self.db.is_passive(k):
+                continue
+            if any(int(num(e["Effect"])) in (E_SCHOOL_DAMAGE, E_HEAL, E_WEAPON_DAMAGE, E_WEAPON_PCT, E_NORMALIZED_WEAPON)
+                   or int(num(e["EffectAura"])) in (A_PERIODIC_DAMAGE, A_PERIODIC_HEAL)
+                   for s in ids for e in self.db.effects.get(s, [])):
+                out.append(k)
+        self.school_cache[school] = out
+        return out
 
     def proc_chain(self, sid: int, depth: int = 0, seen: set | None = None) -> list[int]:
         seen = seen or set()
@@ -516,7 +539,9 @@ class ClassBuilder:
             elif aura in STAT_AURAS:
                 label = STAT_AURAS[aura]
                 if aura in (29, 137):
-                    label = STAT_NAMES.get(int(num(e["EffectMiscValue_0"])), "All stats")
+                    # The stat index is not reliable here; the text names it.
+                    named = re.search(r"(Strength|Agility|Stamina|Intellect|Spirit)", db.desc.get(sid, "") or "")
+                    label = named.group(1) if named else "All stats"
                 add_stat(label)
 
         chain = self.proc_chain(sid)
@@ -561,6 +586,14 @@ class ClassBuilder:
                 k = self.key_of_name[ability_name]
                 if self.use_spell(k) not in mods:
                     mods[self.use_spell(k)] = "named in its effect"
+        # "your Fire spells", "Holy damage", "Shadow and Frost spells": link
+        # every damaging or healing ability of that school.
+        for _, school in SCHOOLS:
+            if re.search(r"\b" + school + r"\b(?:[^.]{0,30}?)\b(spells?|damage|heals?|effects|attacks|critical)\b", rest):
+                for ability in self.school_abilities(school):
+                    k = self.use_spell(ability)
+                    if k not in mods:
+                        mods[k] = f"all {school} spells" if school != "Physical" else "all Physical attacks"
         if dummy and not notes:
             notes.append("Part of this effect is scripted by the server; the description is the reference.")
 
@@ -662,6 +695,8 @@ def merge_overrides(builder: "ClassBuilder", data: dict) -> None:
         if sid is None or sid not in data["talents"]:
             raise SystemExit(f"{path.name}: unknown talent {key!r}")
         t = data["talents"][sid]
+        if patch.get("replaceMods"):
+            t["mods"] = []
         for m in patch.get("mods", []):
             spell = m["spell"]
             if isinstance(spell, str):
@@ -719,10 +754,14 @@ def summary(token: str) -> int:
     builder = ClassBuilder(db, Describer(db), cid, load_era())
     data = builder.build()
     merge_overrides(builder, data)
+    weak_only = "--weak" in sys.argv
     for sid, t in sorted(data["talents"].items(), key=lambda kv: kv[1]["name"]):
+        weak = not t["mods"] or "scripted" in t.get("note", "") or all(m["fx"] == "named in its effect" for m in t["mods"])
+        if weak_only and not weak:
+            continue
         mods = "; ".join(f"{data['spells'][m['spell']]['name']}: {m['fx']}" for m in t["mods"])
         print(f"{t['name']} [{sid}] {mods} | {', '.join(t['stats'])} | {t.get('note', '')}")
-        print(f"    {t['ranks'][-1][:160]}")
+        print(f"    {t['ranks'][-1][:220]}")
     return 0
 
 

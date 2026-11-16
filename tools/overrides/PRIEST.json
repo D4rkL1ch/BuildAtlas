@@ -1,0 +1,52 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Divine Aegis": {
+      "mods": [
+        {"spell": "Flash Heal", "fx": "crits leave a shield"},
+        {"spell": "Greater Heal", "fx": "crits leave a shield"},
+        {"spell": "Lesser Heal", "fx": "crits leave a shield"},
+        {"spell": "Penance", "fx": "crits leave a shield"}
+      ],
+      "stats": ["Spell crit", "Healing power"],
+      "note": "Proc chain: heal crit → absorb shield on the target. Pairs with Inspiration and Renewed Hope."
+    },
+    "Inspiration": {
+      "mods": [
+        {"spell": "Flash Heal", "fx": "crits raise armor"},
+        {"spell": "Greater Heal", "fx": "crits raise armor"},
+        {"spell": "Penance", "fx": "crits raise armor"}
+      ],
+      "stats": ["Spell crit"],
+      "note": "Proc chain: heal crit → more armor on the target (tank healing)."
+    },
+    "Vampiric Embrace": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": "Vampiric Embrace", "fx": "grants the ability"},
+        {"spell": "Shadow Word: Pain", "fx": "damage heals the party"},
+        {"spell": "Mind Blast", "fx": "damage heals the party"},
+        {"spell": "Mind Flay", "fx": "damage heals the party"}
+      ],
+      "note": "Resource loop: your Shadow damage becomes party healing while it is on the target."
+    },
+    "Spirit Tap": {
+      "note": "Resource loop: kills (or targets dying under Vampiric Embrace) double your Spirit and let mana regen continue while casting."
+    },
+    "Dark Inspiration": {
+      "note": "Party buff: Mind Blast and full Mind Flay channels raise Spirit, which Spiritual Guidance turns into power."
+    },
+    "Spiritual Guidance": {
+      "stats": ["Spirit", "Healing power", "Spell power"],
+      "note": "Turns Spirit into spell power: Spirit Tap and Dark Inspiration make it stronger."
+    },
+    "Improved Mind Flay": {"note": "Rewards full Mind Flay channels; each tick hits harder than the last."},
+    "Power in Light": {"note": "Combo: keep Holy Fire or Shadow Word: Pain on the target, then Smite or Penance."},
+    "Renewed Hope": {"note": "Combo: heal targets with Weakened Soul (after Power Word: Shield) for more crit, which feeds Divine Aegis."},
+    "Holy Binding": {"note": "Flash Heal on others also heals you."},
+    "Blessed Recovery": {"stats": ["Health"]},
+    "Litany of Light": {"note": "Resource loop: alternate between different heals to get mana back."},
+    "Meditation": {"stats": ["Spirit", "Mana regen"]},
+    "Mental Strength": {"stats": ["Intellect"]}
+  }
+}

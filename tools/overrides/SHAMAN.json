@@ -1,0 +1,38 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Flurry": {
+      "mods": [{"spell": 6603, "fx": "faster swings after a crit"}],
+      "stats": ["Crit", "Attack speed"],
+      "note": "Proc chain: melee crit → Flurry → more swings → more Windfury and Maelstrom Weapon procs."
+    },
+    "Elemental Devastation": {
+      "mods": [
+        {"spell": "Lightning Bolt", "fx": "crits raise melee crit"},
+        {"spell": "Earth Shock", "fx": "crits raise melee crit"},
+        {"spell": "Flame Shock", "fx": "crits raise melee crit"},
+        {"spell": 6603, "fx": "more crits after a spell crit"}
+      ],
+      "stats": ["Spell crit", "Crit"],
+      "note": "Proc chain: spell crit → melee crit for 10 sec → more Flurry. A hybrid enhancement talent."
+    },
+    "Lightning Overload": {
+      "stats": ["Spell crit", "Spell power"],
+      "note": "Free half-damage copies of Lightning Bolt and Chain Lightning; anything that makes those stronger counts twice."
+    },
+    "Maelstrom Weapon": {
+      "mods": [{"spell": 6603, "fx": "hits build Maelstrom stacks"}],
+      "note": "Proc chain: melee hits → faster, cheaper Lightning Bolt. More swings (Flurry, Windfury) mean more stacks."
+    },
+    "Improved Stormstrike": {"note": "Resource loop: Stormstrike lets mana regen continue while casting; dodges and parries can reset it."},
+    "Thundering Strikes": {"mods": [{"spell": 6603, "fx": "more crits"}], "stats": ["Crit", "Spell crit"], "note": "More crits feed Flurry and Elemental Devastation."},
+    "Mental Dexterity": {"stats": ["Intellect", "Attack power"], "note": "Turns Intellect into Attack Power: Intellect gear helps an enhancement shaman twice."},
+    "Mental Quickness": {"stats": ["Intellect", "Spell power"], "note": "Turns Intellect into spell power."},
+    "Riptide": {"note": "Combo: Riptide the target first, then Chain Heal it."},
+    "Water Shield": {"note": "Resource loop: getting hit and spell crits restore mana."},
+    "Restorative Totems": {"note": "Stronger Mana Spring and Healing Stream totems."},
+    "Ancestral Knowledge": {"stats": ["Intellect"]},
+    "Toughness": {"stats": ["Stamina"]},
+    "Mindfulness": {"stats": ["Spirit", "Mana regen"]}
+  }
+}

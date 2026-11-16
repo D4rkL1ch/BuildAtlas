@@ -1,0 +1,34 @@
+{
+  "_comment": "See WARRIOR.json for the format.",
+  "talents": {
+    "Lone Wolf": {
+      "replaceMods": true,
+      "mods": [
+        {"spell": "Auto Shot", "fx": "more damage without a pet"},
+        {"spell": "Arcane Shot", "fx": "more damage without a pet"},
+        {"spell": "Multi-Shot", "fx": "more damage without a pet"},
+        {"spell": "Aimed Shot", "fx": "more damage without a pet"},
+        {"spell": "Raptor Strike", "fx": "more damage without a pet"}
+      ],
+      "note": "Choice: 20% more damage with no pet, so it conflicts with every pet talent (Unleashed Fury, Frenzy, Spirit Bond, Focused Fire)."
+    },
+    "Focused Fire": {"note": "Needs an active pet; conflicts with Lone Wolf."},
+    "Frenzy": {"note": "Pet crits → faster pet attacks. Pet talent; useless with Lone Wolf."},
+    "Spirit Bond": {"note": "Pet talent; useless with Lone Wolf."},
+    "Endurance Training": {"note": "Pet talent; useless with Lone Wolf."},
+    "Bestial Swiftness": {"note": "Pet talent; useless with Lone Wolf."},
+    "Bestial Discipline": {"stats": ["Spirit", "Mana regen"], "note": "Half pet Focus, half mana regen while casting."},
+    "Careful Aim": {"stats": ["Intellect", "Attack power"], "note": "Turns Intellect into Attack Power: gear with Intellect counts twice."},
+    "Lethal Attacks": {
+      "mods": [{"spell": "Auto Shot", "fx": "more crits"}],
+      "stats": ["Crit"]
+    },
+    "Expose Prey": {"note": "Combo: keep Hunter's Mark up → melee and ranged hits can enable Mongoose Bite."},
+    "Lacerating Strikes": {"note": "Mongoose Bite also bleeds; more Mongoose Bites (Expose Prey) mean more bleeds."},
+    "Rapid Killing": {"note": "Kills under Serpent Sting empower your next Shot; shorter Rapid Fire cooldown."},
+    "Rapid Recuperation": {"note": "Resource loop: Serpent Sting lets mana regen continue while casting."},
+    "Entrapment": {"note": "Traps also root everything they hit."},
+    "Lightning Reflexes": {"stats": ["Agility"]},
+    "Survivalist": {"stats": ["Health"]}
+  }
+}
